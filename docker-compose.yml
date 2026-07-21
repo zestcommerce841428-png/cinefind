@@ -1,0 +1,11 @@
+services:
+  cinefind:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - TMDB_API_KEY=${TMDB_API_KEY}
+      - TMDB_API_READ_ACCESS_TOKEN=${TMDB_API_READ_ACCESS_TOKEN}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      - NEXT_PUBLIC_TMDB_IMAGE_BASE=https://image.tmdb.org/t/p
+    restart: unless-stopped

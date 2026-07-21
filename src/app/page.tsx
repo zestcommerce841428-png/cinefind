@@ -1,66 +1,94 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Container from "@mui/material/Container";
+import HeroCarousel from "@/components/media/HeroCarousel";
+import MediaRow from "@/components/media/MediaRow";
+import {
+  getTrending,
+  getPopularMovies,
+  getTopRatedMovies,
+  getNowPlayingMovies,
+  getUpcomingMovies,
+  getPopularTv,
+  getTopRatedTv,
+  getAiringTodayTv,
+} from "@/lib/tmdb";
+import type { MovieSummary, TvSummary } from "@/lib/tmdb/types";
 
-export default function Home() {
+export const revalidate = 3600;
+
+export default async function HomePage() {
+  const [
+    trending,
+    popularMovies,
+    topRatedMovies,
+    nowPlaying,
+    upcoming,
+    popularTv,
+    topRatedTv,
+    airingToday,
+  ] = await Promise.all([
+    getTrending("movie", "day"),
+    getPopularMovies(),
+    getTopRatedMovies(),
+    getNowPlayingMovies(),
+    getUpcomingMovies(),
+    getPopularTv(),
+    getTopRatedTv(),
+    getAiringTodayTv(),
+  ]);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <HeroCarousel items={trending.results as MovieSummary[]} />
+      <Container maxWidth="lg" sx={{ pb: 6 }}>
+        <MediaRow
+          title="Trending Today"
+          items={trending.results as MovieSummary[]}
+          mediaType="movie"
+          seeAllHref="/movies/discover"
         />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        <MediaRow
+          title="Popular Movies"
+          items={popularMovies.results}
+          mediaType="movie"
+          seeAllHref="/movies/popular"
+        />
+        <MediaRow
+          title="Now Playing in Theaters"
+          items={nowPlaying.results}
+          mediaType="movie"
+          seeAllHref="/movies/now-playing"
+        />
+        <MediaRow
+          title="Top Rated Movies"
+          items={topRatedMovies.results}
+          mediaType="movie"
+          seeAllHref="/movies/top-rated"
+        />
+        <MediaRow
+          title="Upcoming Releases"
+          items={upcoming.results}
+          mediaType="movie"
+          seeAllHref="/movies/upcoming"
+        />
+        <MediaRow
+          title="Popular TV Shows"
+          items={popularTv.results as TvSummary[]}
+          mediaType="tv"
+          seeAllHref="/tv/popular"
+        />
+        <MediaRow
+          title="Top Rated TV Shows"
+          items={topRatedTv.results as TvSummary[]}
+          mediaType="tv"
+          seeAllHref="/tv/top-rated"
+        />
+        <MediaRow
+          title="Airing Today"
+          items={airingToday.results as TvSummary[]}
+          mediaType="tv"
+          seeAllHref="/tv/airing-today"
+        />
+      </Container>
+    </>
   );
 }
