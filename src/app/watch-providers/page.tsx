@@ -42,12 +42,16 @@ export default async function WatchProvidersPage() {
                 <Box
                   component={Link}
                   href={`/movies/discover?with_watch_providers=${p.provider_id}&watch_region=US`}
+                  sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: 80, textDecoration: "none", color: "inherit" }}
                 >
                   <Avatar
                     src={tmdbImage(p.logo_path, "w92") ?? undefined}
                     variant="rounded"
                     sx={{ width: 56, height: 56 }}
                   />
+                  <Typography variant="caption" align="center" noWrap sx={{ maxWidth: 80, mt: 0.5 }}>
+                    {p.provider_name}
+                  </Typography>
                 </Box>
               </Tooltip>
             ))}
@@ -66,12 +70,16 @@ export default async function WatchProvidersPage() {
                 <Box
                   component={Link}
                   href={`/tv/discover?with_watch_providers=${p.provider_id}&watch_region=US`}
+                  sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: 80, textDecoration: "none", color: "inherit" }}
                 >
                   <Avatar
                     src={tmdbImage(p.logo_path, "w92") ?? undefined}
                     variant="rounded"
                     sx={{ width: 56, height: 56 }}
                   />
+                  <Typography variant="caption" align="center" noWrap sx={{ maxWidth: 80, mt: 0.5 }}>
+                    {p.provider_name}
+                  </Typography>
                 </Box>
               </Tooltip>
             ))}

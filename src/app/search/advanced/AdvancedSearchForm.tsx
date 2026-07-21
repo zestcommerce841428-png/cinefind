@@ -25,6 +25,15 @@ const LANGUAGES = [
   { value: "zh", label: "Chinese" },
 ];
 
+const CERTIFICATIONS = [
+  { value: "", label: "Any Rating" },
+  { value: "G", label: "G" },
+  { value: "PG", label: "PG" },
+  { value: "PG-13", label: "PG-13" },
+  { value: "R", label: "R" },
+  { value: "NC-17", label: "NC-17" },
+];
+
 export default function AdvancedSearchForm({ genres }: { genres: Genre[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -38,6 +47,7 @@ export default function AdvancedSearchForm({ genres }: { genres: Genre[] }) {
   const [runtimeMin, setRuntimeMin] = React.useState(searchParams.get("runtime_min") ?? "");
   const [runtimeMax, setRuntimeMax] = React.useState(searchParams.get("runtime_max") ?? "");
   const [language, setLanguage] = React.useState(searchParams.get("language") ?? "");
+  const [certification, setCertification] = React.useState(searchParams.get("certification") ?? "");
 
   function toggleGenre(id: number) {
     setGenreIds((prev) => (prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id]));
@@ -53,6 +63,7 @@ export default function AdvancedSearchForm({ genres }: { genres: Genre[] }) {
     if (runtimeMin) params.set("runtime_min", runtimeMin);
     if (runtimeMax) params.set("runtime_max", runtimeMax);
     if (language) params.set("language", language);
+    if (certification) params.set("certification", certification);
     router.push(`/search/advanced?${params.toString()}`);
   }
 
@@ -139,8 +150,25 @@ export default function AdvancedSearchForm({ genres }: { genres: Genre[] }) {
             onChange={(e) => setRuntimeMax(e.target.value)}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Button type="submit" variant="contained" sx={{ height: 40 }}>
+        <Grid size={{ xs: 6, sm: 3 }}>
+          <FormControl fullWidth size="small">
+            <InputLabel id="cert-label">MPAA Rating</InputLabel>
+            <Select
+              labelId="cert-label"
+              label="MPAA Rating"
+              value={certification}
+              onChange={(e) => setCertification(e.target.value)}
+            >
+              {CERTIFICATIONS.map((c) => (
+                <MenuItem key={c.value} value={c.value}>
+                  {c.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 3 }}>
+          <Button type="submit" variant="contained" fullWidth sx={{ height: 40 }}>
             Search
           </Button>
         </Grid>

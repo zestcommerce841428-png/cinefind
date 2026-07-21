@@ -14,6 +14,7 @@ import WatchProviders from "@/components/media/WatchProviders";
 import ReviewList from "@/components/media/ReviewList";
 import MediaRow from "@/components/media/MediaRow";
 import ActionButtons from "@/components/account/ActionButtons";
+import EmbedWidget from "@/components/media/EmbedWidget";
 import { tmdbImage } from "@/lib/tmdb/config";
 import { TmdbError } from "@/lib/tmdb/fetcher";
 import { getSessionId } from "@/lib/session";
@@ -193,6 +194,8 @@ export default async function MoviePage({ params }: MoviePageProps) {
                 <Link href={`/movie/${id}/alternative-titles`}>Alternative Titles</Link>
                 <Link href={`/movie/${id}/translations`}>Translations</Link>
                 <Link href={`/movie/${id}/lists`}>Community Lists</Link>
+                <Link href={`/movie/${id}/release-dates`}>Release Dates &amp; Certifications</Link>
+                <Link href={`/movie/${id}/watch`}>Where to Watch (all regions)</Link>
                 {movie.belongs_to_collection && (
                   <Link href={`/collection/${movie.belongs_to_collection.id}`}>
                     {movie.belongs_to_collection.name}
@@ -200,6 +203,8 @@ export default async function MoviePage({ params }: MoviePageProps) {
                 )}
               </Stack>
             </Box>
+
+            <EmbedWidget mediaType="movie" id={movie.id} />
 
             {keywords.keywords?.length > 0 && (
               <Box component="section">

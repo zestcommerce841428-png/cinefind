@@ -1,0 +1,103 @@
+"use client";
+
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+
+interface TitleOption {
+  id: number;
+  title: string;
+  year: string;
+  poster_path: string | null;
+}
+
+function TitleAutocomplete({
+  label,
+  mediaType,
+  value,
+  onChange,
+}: {
+  label: string;
+  mediaType: "movie" | "tv";
+  value: TitleOption | null;
+  onChange: (v: TitleOption | null) => void;
+}) {
+  const [options, setOptions] = React.useState<TitleOption[]>([]);
+  const [inputValue, setInputValue] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    const trimmed = inputValue.trim();
+    const handle = setTimeout(async () => {
+      if (!trimmed) {
+        setOptions([]);
+        return;
+      }
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/search/${mediaType}?q=${encodeURIComponent(trimmed)}`);
+        const data = await res.json();
+        setOptions(data.results ?? []);
+      } finally {
+        setLoading(false);
+      }
+    }, 350);
+    return () => clearTimeout(handle);
+  }, [inputValue, mediaType]);
+
+  return (
+    <Autocomplete
+      value={value}
+      onChange={(_, v) => onChange(v)}
+      inputValue={inputValue}
+      onInputChange={(_, v) => setInputValue(v)}
+      options={options}
+      loading={loading}
+      getOptionLabel={(o) => `${o.title}${o.year ? ` (${o.year})` : ""}`}
+      isOptionEqualToValue={(o, v) => o.id === v.id}
+      renderInput={(params) => <TextField {...params} label={label} size="small" />}
+    />
+  );
+}
+
+export default function ComparePickerForm({ mediaType }: { mediaType: "movie" | "tv" }) {
+  const router = useRouter();
+  const [a, setA] = React.useState<TitleOption | null>(null);
+  const [b, setB] = React.useState<TitleOption | null>(null);
+
+  function handleCompare() {
+    if (!a || !b) return;
+    router.push(`/compare/${mediaType}?a=${a.id}&b=${b.id}`);
+  }
+
+  return (
+    <Grid container spacing={2} sx={{ alignItems: "center", mb: 4 }}>
+      <Grid size={{ xs: 12, sm: 5 }}>
+        <TitleAutocomplete label="First title" mediaType={mediaType} value={a} onChange={setA} />
+      </Grid>
+      <Grid size={{ xs: 12, sm: 2 }} sx={{ textAlign: "center" }}>
+        <Typography variant="body2" color="text.secondary">
+          vs
+        </Typography>
+      </Grid>
+      <Grid size={{ xs: 12, sm: 5 }}>
+        <TitleAutocomplete label="Second title" mediaType={mediaType} value={b} onChange={setB} />
+      </Grid>
+      <Grid size={12}>
+        <Button
+          variant="contained"
+          startIcon={<CompareArrowsIcon />}
+          disabled={!a || !b}
+          onClick={handleCompare}
+        >
+          Compare
+        </Button>
+      </Grid>
+    </Grid>
+  );
+}

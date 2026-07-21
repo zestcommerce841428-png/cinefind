@@ -2,6 +2,7 @@ import { tmdbFetch } from "./fetcher";
 import type {
   Collection,
   Company,
+  Image,
   MovieSummary,
   Network,
   PaginatedResponse,
@@ -98,11 +99,15 @@ export interface DiscoverMovieParams {
   with_original_language?: string;
   with_watch_providers?: string;
   watch_region?: string;
-  with_runtime_gte?: number;
-  with_runtime_lte?: number;
+  "with_runtime.gte"?: number;
+  "with_runtime.lte"?: number;
   with_keywords?: string;
   with_companies?: string;
   include_adult?: boolean;
+  certification?: string;
+  "certification.lte"?: string;
+  "certification.gte"?: string;
+  certification_country?: string;
 }
 
 export const discoverMovies = (params: DiscoverMovieParams = {}) =>
@@ -142,7 +147,7 @@ export const getCollectionDetails = (id: number | string) =>
   tmdbFetch<Collection>(`/collection/${id}`);
 
 export const getCollectionImages = (id: number | string) =>
-  tmdbFetch<{ id: number; backdrops: unknown[]; posters: unknown[] }>(`/collection/${id}/images`);
+  tmdbFetch<{ id: number; backdrops: Image[]; posters: Image[] }>(`/collection/${id}/images`);
 
 export const getCollectionTranslations = (id: number | string) =>
   tmdbFetch<{ id: number; translations: unknown[] }>(`/collection/${id}/translations`);
@@ -155,7 +160,7 @@ export const getCompanyAlternativeNames = (id: number | string) =>
   );
 
 export const getCompanyImages = (id: number | string) =>
-  tmdbFetch<{ id: number; logos: unknown[] }>(`/company/${id}/images`);
+  tmdbFetch<{ id: number; logos: Image[] }>(`/company/${id}/images`);
 
 export const getNetworkDetails = (id: number | string) => tmdbFetch<Network>(`/network/${id}`);
 
@@ -165,7 +170,7 @@ export const getNetworkAlternativeNames = (id: number | string) =>
   );
 
 export const getNetworkImages = (id: number | string) =>
-  tmdbFetch<{ id: number; logos: unknown[] }>(`/network/${id}/images`);
+  tmdbFetch<{ id: number; logos: Image[] }>(`/network/${id}/images`);
 
 export const getKeywordDetails = (id: number | string) =>
   tmdbFetch<{ id: number; name: string }>(`/keyword/${id}`);

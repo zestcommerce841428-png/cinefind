@@ -15,6 +15,7 @@ import ReviewList from "@/components/media/ReviewList";
 import SeasonList from "@/components/media/SeasonList";
 import MediaRow from "@/components/media/MediaRow";
 import ActionButtons from "@/components/account/ActionButtons";
+import EmbedWidget from "@/components/media/EmbedWidget";
 import { tmdbImage } from "@/lib/tmdb/config";
 import { TmdbError } from "@/lib/tmdb/fetcher";
 import { getSessionId } from "@/lib/session";
@@ -202,8 +203,12 @@ export default async function TvPage({ params }: TvPageProps) {
                 <Link href={`/tv/${id}/alternative-titles`}>Alternative Titles</Link>
                 <Link href={`/tv/${id}/translations`}>Translations</Link>
                 <Link href={`/tv/${id}/episode-groups`}>Episode Groups</Link>
+                <Link href={`/tv/${id}/content-ratings`}>Content Ratings</Link>
+                <Link href={`/tv/${id}/watch`}>Where to Watch (all regions)</Link>
               </Stack>
             </Box>
+
+            <EmbedWidget mediaType="tv" id={tv.id} />
 
             {keywords.results?.length > 0 && (
               <Box component="section">

@@ -22,6 +22,7 @@ interface PageProps {
     runtime_min?: string;
     runtime_max?: string;
     language?: string;
+    certification?: string;
     sort_by?: string;
   }>;
 }
@@ -38,9 +39,11 @@ export default async function AdvancedSearchPage({ searchParams }: PageProps) {
         "primary_release_date.gte": params.year_from ? `${params.year_from}-01-01` : undefined,
         "primary_release_date.lte": params.year_to ? `${params.year_to}-12-31` : undefined,
         "vote_average.gte": params.rating_min ? Number(params.rating_min) : undefined,
-        with_runtime_gte: params.runtime_min ? Number(params.runtime_min) : undefined,
-        with_runtime_lte: params.runtime_max ? Number(params.runtime_max) : undefined,
+        "with_runtime.gte": params.runtime_min ? Number(params.runtime_min) : undefined,
+        "with_runtime.lte": params.runtime_max ? Number(params.runtime_max) : undefined,
         with_original_language: params.language,
+        certification: params.certification,
+        certification_country: params.certification ? "US" : undefined,
         sort_by: params.sort_by || "popularity.desc",
         "vote_count.gte": 50,
       })
