@@ -13,6 +13,7 @@ import { tmdbImage } from "@/lib/tmdb/config";
 import { TmdbError } from "@/lib/tmdb/fetcher";
 import { getPersonDetails, getPersonCombinedCredits, getPersonExternalIds } from "@/lib/tmdb";
 import MediaGrid from "@/components/media/MediaGrid";
+import BreadcrumbJsonLd from "@/components/common/BreadcrumbJsonLd";
 import type { MovieSummary, TvSummary } from "@/lib/tmdb/types";
 
 export const revalidate = 3600;
@@ -76,6 +77,13 @@ export default async function PersonPage({ params }: PersonPageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", path: "/" },
+          { name: "People", path: "/people" },
+          { name: person.name, path: `/person/${id}` },
+        ]}
       />
       <Grid container spacing={5}>
         <Grid size={{ xs: 12, sm: 4, md: 3 }}>

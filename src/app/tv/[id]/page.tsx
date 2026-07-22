@@ -16,6 +16,9 @@ import SeasonList from "@/components/media/SeasonList";
 import MediaRow from "@/components/media/MediaRow";
 import ActionButtons from "@/components/account/ActionButtons";
 import EmbedWidget from "@/components/media/EmbedWidget";
+import ShareButton from "@/components/media/ShareButton";
+import BreadcrumbJsonLd from "@/components/common/BreadcrumbJsonLd";
+import RecentlyViewedRecorder from "@/components/media/RecentlyViewedRecorder";
 import { tmdbImage } from "@/lib/tmdb/config";
 import { TmdbError } from "@/lib/tmdb/fetcher";
 import { getSessionId } from "@/lib/session";
@@ -116,6 +119,20 @@ export default async function TvPage({ params }: TvPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", path: "/" },
+          { name: "TV Shows", path: "/tv" },
+          { name: tv.name, path: `/tv/${id}` },
+        ]}
+      />
+      <RecentlyViewedRecorder
+        id={tv.id}
+        mediaType="tv"
+        title={tv.name}
+        posterPath={tv.poster_path}
+        voteAverage={tv.vote_average}
+      />
       <DetailHero
         title={tv.name}
         tagline={tv.tagline}
@@ -135,14 +152,17 @@ export default async function TvPage({ params }: TvPageProps) {
         genres={tv.genres}
         metaChips={[tv.status, usRating].filter(Boolean) as string[]}
         actions={
-          <ActionButtons
-            mediaType="tv"
-            mediaId={tv.id}
-            isAuthenticated={!!sessionId}
-            initialFavorite={accountStates?.favorite ?? false}
-            initialWatchlist={accountStates?.watchlist ?? false}
-            initialRating={ratedValue}
-          />
+          <Stack direction="row" sx={{ gap: 1.5, alignItems: "center", flexWrap: "wrap" }}>
+            <ActionButtons
+              mediaType="tv"
+              mediaId={tv.id}
+              isAuthenticated={!!sessionId}
+              initialFavorite={accountStates?.favorite ?? false}
+              initialWatchlist={accountStates?.watchlist ?? false}
+              initialRating={ratedValue}
+            />
+            <ShareButton title={tv.name} text={tv.overview} />
+          </Stack>
         }
       />
 

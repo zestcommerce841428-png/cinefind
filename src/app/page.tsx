@@ -1,6 +1,7 @@
 import Container from "@mui/material/Container";
 import HeroCarousel from "@/components/media/HeroCarousel";
 import MediaRow from "@/components/media/MediaRow";
+import RecentlyViewedRow from "@/components/media/RecentlyViewedRow";
 import {
   getTrending,
   getPopularMovies,
@@ -40,6 +41,7 @@ export default async function HomePage() {
     <>
       <HeroCarousel items={trending.results as MovieSummary[]} />
       <Container maxWidth="lg" sx={{ pb: 6 }}>
+        <RecentlyViewedRow />
         <MediaRow
           title="Trending Today"
           items={trending.results as MovieSummary[]}

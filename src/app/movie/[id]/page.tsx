@@ -15,6 +15,9 @@ import ReviewList from "@/components/media/ReviewList";
 import MediaRow from "@/components/media/MediaRow";
 import ActionButtons from "@/components/account/ActionButtons";
 import EmbedWidget from "@/components/media/EmbedWidget";
+import ShareButton from "@/components/media/ShareButton";
+import BreadcrumbJsonLd from "@/components/common/BreadcrumbJsonLd";
+import RecentlyViewedRecorder from "@/components/media/RecentlyViewedRecorder";
 import { tmdbImage } from "@/lib/tmdb/config";
 import { TmdbError } from "@/lib/tmdb/fetcher";
 import { getSessionId } from "@/lib/session";
@@ -111,6 +114,20 @@ export default async function MoviePage({ params }: MoviePageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", path: "/" },
+          { name: "Movies", path: "/movies" },
+          { name: movie.title, path: `/movie/${id}` },
+        ]}
+      />
+      <RecentlyViewedRecorder
+        id={movie.id}
+        mediaType="movie"
+        title={movie.title}
+        posterPath={movie.poster_path}
+        voteAverage={movie.vote_average}
+      />
       <DetailHero
         title={movie.title}
         tagline={movie.tagline}
@@ -127,14 +144,17 @@ export default async function MoviePage({ params }: MoviePageProps) {
         genres={movie.genres}
         metaChips={[movie.status]}
         actions={
-          <ActionButtons
-            mediaType="movie"
-            mediaId={movie.id}
-            isAuthenticated={!!sessionId}
-            initialFavorite={accountStates?.favorite ?? false}
-            initialWatchlist={accountStates?.watchlist ?? false}
-            initialRating={ratedValue}
-          />
+          <Stack direction="row" sx={{ gap: 1.5, alignItems: "center", flexWrap: "wrap" }}>
+            <ActionButtons
+              mediaType="movie"
+              mediaId={movie.id}
+              isAuthenticated={!!sessionId}
+              initialFavorite={accountStates?.favorite ?? false}
+              initialWatchlist={accountStates?.watchlist ?? false}
+              initialRating={ratedValue}
+            />
+            <ShareButton title={movie.title} text={movie.overview} />
+          </Stack>
         }
       />
 

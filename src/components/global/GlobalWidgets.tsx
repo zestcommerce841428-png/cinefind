@@ -8,16 +8,19 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import ScrollButtons from "./ScrollButtons";
 import AccessibilityEffects from "./AccessibilityEffects";
 import UnifiedSettingsPanel from "./UnifiedSettingsPanel";
+import WebVitals from "./WebVitals";
 
 export default function GlobalWidgets() {
   const [panelOpen, setPanelOpen] = React.useState(false);
 
   return (
     <>
+      <WebVitals />
       <AccessibilityEffects />
       <ScrollButtons />
 
       <Box
+        data-print-hide
         sx={{
           position: "fixed",
           bottom: { xs: 80, sm: 24 },
