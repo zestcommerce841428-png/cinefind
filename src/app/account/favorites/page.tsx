@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import AccountMediaTabs from "@/components/account/AccountMediaTabs";
+import ExportButtons from "@/components/account/ExportButtons";
 import { getAccountDetails, getFavoriteMovies, getFavoriteTv } from "@/lib/tmdb";
 import { getSessionId } from "@/lib/session";
 
@@ -32,6 +33,7 @@ export default async function FavoritesPage({
       <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>
         My Favorites
       </Typography>
+      <ExportButtons type="favorites" />
       <AccountMediaTabs
         basePath="/account/favorites"
         activeTab={activeTab}

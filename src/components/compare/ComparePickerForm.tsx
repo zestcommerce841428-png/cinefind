@@ -16,14 +16,22 @@ interface TitleOption {
   poster_path: string | null;
 }
 
+export type CompareKind = "movie" | "tv" | "company";
+
+const SEARCH_ENDPOINTS: Record<CompareKind, string> = {
+  movie: "/api/search/movies",
+  tv: "/api/search/tv",
+  company: "/api/search/companies",
+};
+
 function TitleAutocomplete({
   label,
-  mediaType,
+  kind,
   value,
   onChange,
 }: {
   label: string;
-  mediaType: "movie" | "tv";
+  kind: CompareKind;
   value: TitleOption | null;
   onChange: (v: TitleOption | null) => void;
 }) {
@@ -40,7 +48,7 @@ function TitleAutocomplete({
       }
       setLoading(true);
       try {
-        const res = await fetch(`/api/search/${mediaType}?q=${encodeURIComponent(trimmed)}`);
+        const res = await fetch(`${SEARCH_ENDPOINTS[kind]}?q=${encodeURIComponent(trimmed)}`);
         const data = await res.json();
         setOptions(data.results ?? []);
       } finally {
@@ -48,7 +56,7 @@ function TitleAutocomplete({
       }
     }, 350);
     return () => clearTimeout(handle);
-  }, [inputValue, mediaType]);
+  }, [inputValue, kind]);
 
   return (
     <Autocomplete
@@ -65,20 +73,35 @@ function TitleAutocomplete({
   );
 }
 
-export default function ComparePickerForm({ mediaType }: { mediaType: "movie" | "tv" }) {
+const ROUTE_SEGMENT: Record<CompareKind, string> = {
+  movie: "movie",
+  tv: "tv",
+  company: "company",
+};
+
+export default function ComparePickerForm({
+  mediaType,
+  kind,
+}: {
+  mediaType?: "movie" | "tv";
+  kind?: CompareKind;
+}) {
+  const resolvedKind = kind ?? mediaType ?? "movie";
   const router = useRouter();
   const [a, setA] = React.useState<TitleOption | null>(null);
   const [b, setB] = React.useState<TitleOption | null>(null);
 
   function handleCompare() {
     if (!a || !b) return;
-    router.push(`/compare/${mediaType}?a=${a.id}&b=${b.id}`);
+    router.push(`/compare/${ROUTE_SEGMENT[resolvedKind]}?a=${a.id}&b=${b.id}`);
   }
+
+  const label = resolvedKind === "company" ? "studio" : "title";
 
   return (
     <Grid container spacing={2} sx={{ alignItems: "center", mb: 4 }}>
       <Grid size={{ xs: 12, sm: 5 }}>
-        <TitleAutocomplete label="First title" mediaType={mediaType} value={a} onChange={setA} />
+        <TitleAutocomplete label={`First ${label}`} kind={resolvedKind} value={a} onChange={setA} />
       </Grid>
       <Grid size={{ xs: 12, sm: 2 }} sx={{ textAlign: "center" }}>
         <Typography variant="body2" color="text.secondary">
@@ -86,7 +109,7 @@ export default function ComparePickerForm({ mediaType }: { mediaType: "movie" | 
         </Typography>
       </Grid>
       <Grid size={{ xs: 12, sm: 5 }}>
-        <TitleAutocomplete label="Second title" mediaType={mediaType} value={b} onChange={setB} />
+        <TitleAutocomplete label={`Second ${label}`} kind={resolvedKind} value={b} onChange={setB} />
       </Grid>
       <Grid size={12}>
         <Button

@@ -97,6 +97,7 @@ export interface DiscoverMovieParams {
   "vote_average.lte"?: number;
   "vote_count.gte"?: number;
   with_original_language?: string;
+  with_origin_country?: string;
   with_watch_providers?: string;
   watch_region?: string;
   "with_runtime.gte"?: number;
@@ -123,6 +124,7 @@ export interface DiscoverTvParams {
   first_air_date_year?: number;
   "vote_average.gte"?: number;
   with_original_language?: string;
+  with_origin_country?: string;
   with_watch_providers?: string;
   watch_region?: string;
   with_networks?: string;

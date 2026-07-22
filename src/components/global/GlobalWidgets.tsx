@@ -9,6 +9,7 @@ import ScrollButtons from "./ScrollButtons";
 import AccessibilityEffects from "./AccessibilityEffects";
 import UnifiedSettingsPanel from "./UnifiedSettingsPanel";
 import WebVitals from "./WebVitals";
+import CommandPalette from "./CommandPalette";
 
 export default function GlobalWidgets() {
   const [panelOpen, setPanelOpen] = React.useState(false);
@@ -18,6 +19,7 @@ export default function GlobalWidgets() {
       <WebVitals />
       <AccessibilityEffects />
       <ScrollButtons />
+      <CommandPalette />
 
       <Box
         data-print-hide

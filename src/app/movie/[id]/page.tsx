@@ -8,6 +8,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import DetailHero from "@/components/media/DetailHero";
+import ReleaseCountdown from "@/components/media/ReleaseCountdown";
 import CastRow from "@/components/media/CastRow";
 import VideoGallery from "@/components/media/VideoGallery";
 import WatchProviders from "@/components/media/WatchProviders";
@@ -154,6 +155,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
               initialRating={ratedValue}
             />
             <ShareButton title={movie.title} text={movie.overview} />
+            {movie.release_date && <ReleaseCountdown releaseDate={movie.release_date} />}
           </Stack>
         }
       />

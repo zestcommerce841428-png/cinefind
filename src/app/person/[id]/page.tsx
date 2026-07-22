@@ -11,9 +11,17 @@ import Chip from "@mui/material/Chip";
 import Button from "@mui/material/Button";
 import { tmdbImage } from "@/lib/tmdb/config";
 import { TmdbError } from "@/lib/tmdb/fetcher";
-import { getPersonDetails, getPersonCombinedCredits, getPersonExternalIds } from "@/lib/tmdb";
+import {
+  getPersonDetails,
+  getPersonCombinedCredits,
+  getPersonExternalIds,
+  getMovieGenres,
+  getTvGenres,
+} from "@/lib/tmdb";
 import MediaGrid from "@/components/media/MediaGrid";
 import BreadcrumbJsonLd from "@/components/common/BreadcrumbJsonLd";
+import FilmographyTimeline from "@/components/detail/FilmographyTimeline";
+import GenreFingerprint from "@/components/detail/GenreFingerprint";
 import type { MovieSummary, TvSummary } from "@/lib/tmdb/types";
 
 export const revalidate = 3600;
@@ -28,6 +36,8 @@ async function loadPerson(id: string) {
       getPersonDetails(id),
       getPersonCombinedCredits(id),
       getPersonExternalIds(id),
+      getMovieGenres(),
+      getTvGenres(),
     ]);
   } catch (err) {
     if (err instanceof TmdbError && err.status === 404) return null;
@@ -56,12 +66,20 @@ export default async function PersonPage({ params }: PersonPageProps) {
   const { id } = await params;
   const data = await loadPerson(id);
   if (!data) notFound();
-  const [person, credits, externalIds] = data;
+  const [person, credits, externalIds, movieGenres, tvGenres] = data;
 
   const knownFor = [...credits.cast, ...credits.crew]
     .sort((a, b) => b.popularity - a.popularity)
     .filter((v, i, arr) => arr.findIndex((x) => x.id === v.id && x.media_type === v.media_type) === i)
     .slice(0, 18);
+
+  const genreNameMap = new Map<number, string>([
+    ...movieGenres.genres.map((g) => [g.id, g.name] as const),
+    ...tvGenres.genres.map((g) => [g.id, g.name] as const),
+  ]);
+  const uniqueCastCredits = credits.cast.filter(
+    (v, i, arr) => arr.findIndex((x) => x.id === v.id && x.media_type === v.media_type) === i
+  );
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -193,6 +211,9 @@ export default async function PersonPage({ params }: PersonPageProps) {
             </Stack>
             <MediaGrid items={knownFor as (MovieSummary | TvSummary)[]} />
           </Box>
+
+          <GenreFingerprint items={uniqueCastCredits as (MovieSummary | TvSummary)[]} genreNames={genreNameMap} />
+          <FilmographyTimeline items={uniqueCastCredits as (MovieSummary | TvSummary)[]} />
 
           <Button component={Link} href={`/person/${id}/images`} variant="outlined" size="small">
             View Photos

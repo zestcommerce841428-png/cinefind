@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import { getMovieGenres, getTvGenres } from "@/lib/tmdb";
+import SurpriseMe from "@/components/discover/SurpriseMe";
 
 export const revalidate = 86400;
 export const metadata: Metadata = {
@@ -21,6 +22,8 @@ export default async function GenresPage() {
       <Typography variant="h4" sx={{ fontWeight: 800, mb: 4 }}>
         Browse by Genre
       </Typography>
+
+      <SurpriseMe movieGenres={movieGenres.genres} tvGenres={tvGenres.genres} />
 
       <Box component="section" sx={{ mb: 5 }}>
         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>

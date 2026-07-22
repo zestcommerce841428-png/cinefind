@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import MediaCard from "./MediaCard";
+import WatchHistoryHeatmap from "./WatchHistoryHeatmap";
 import {
   clearRecentlyViewed,
   subscribeRecentlyViewed,
@@ -48,6 +49,7 @@ export default function RecentlyViewedRow() {
           </Box>
         ))}
       </Box>
+      <WatchHistoryHeatmap />
     </Box>
   );
 }

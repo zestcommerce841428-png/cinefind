@@ -5,6 +5,7 @@ import Stack from "@mui/material/Stack";
 import Rating from "@mui/material/Rating";
 import Button from "@mui/material/Button";
 import Link from "@/components/common/NextLink";
+import SpoilerShieldText from "./SpoilerShieldText";
 import type { Review } from "@/lib/tmdb/types";
 
 export default function ReviewList({ reviews, seeAllHref }: { reviews: Review[]; seeAllHref?: string }) {
@@ -47,18 +48,7 @@ export default function ReviewList({ reviews, seeAllHref }: { reviews: Review[];
                 )}
               </Box>
             </Stack>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{
-                display: "-webkit-box",
-                WebkitLineClamp: 5,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
-            >
-              {review.content}
-            </Typography>
+            <SpoilerShieldText content={review.content} />
           </Box>
         ))}
       </Stack>
