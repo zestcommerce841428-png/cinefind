@@ -52,8 +52,8 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           sx={{
             position: "absolute",
             inset: 0,
-            background: (t) =>
-              `linear-gradient(to top, ${t.palette.background.default}, rgba(0,0,0,0.3))`,
+            background:
+              "linear-gradient(to top, var(--mui-palette-background-default), rgba(0,0,0,0.3))",
           }}
         />
       </Box>

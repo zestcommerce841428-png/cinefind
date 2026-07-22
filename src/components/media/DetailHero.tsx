@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";

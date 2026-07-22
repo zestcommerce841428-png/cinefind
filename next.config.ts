@@ -6,11 +6,14 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   // 'unsafe-inline' is required for MUI's Emotion runtime styles and the
   // JSON-LD/color-scheme init scripts rendered inline in the document.
-  "script-src 'self' 'unsafe-inline'",
+  // 'unsafe-eval' is only added in dev — React's dev-mode error overlay and
+  // Turbopack HMR use eval() for stack-trace reconstruction; production
+  // builds never call eval() so it's correctly omitted there.
+  `script-src 'self' 'unsafe-inline'${isProd ? "" : " 'unsafe-eval'"}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https://image.tmdb.org https://img.youtube.com",
   "font-src 'self' data:",
-  "connect-src 'self' https://api.themoviedb.org",
+  "connect-src 'self' https://api.themoviedb.org https://www.themoviedb.org",
   "frame-src https://www.youtube.com",
   "frame-ancestors 'self'",
   "base-uri 'self'",
