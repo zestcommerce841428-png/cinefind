@@ -19,6 +19,7 @@ const RATE_LIMITS: { prefix: string; max: number }[] = [
   { prefix: "/api/guest/", max: 60 },
   { prefix: "/api/account/", max: 60 },
   { prefix: "/api/lists", max: 60 },
+  { prefix: "/api/watch-party", max: 60 },
 ];
 
 function getClientKey(request: NextRequest, prefix: string): string {

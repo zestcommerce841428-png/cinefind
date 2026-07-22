@@ -35,6 +35,7 @@ import {
   getMovieKeywords,
   getMovieAccountStates,
   getMovieExternalIds,
+  getMovieReleaseDates,
   getKeywordMovies,
 } from "@/lib/tmdb";
 
@@ -56,6 +57,7 @@ async function loadMovie(id: string) {
       getMovieWatchProviders(id),
       getMovieKeywords(id),
       getMovieExternalIds(id),
+      getMovieReleaseDates(id),
     ]);
   } catch (err) {
     if (err instanceof TmdbError && err.status === 404) return null;
@@ -88,8 +90,11 @@ export default async function MoviePage({ params }: MoviePageProps) {
   const data = await loadMovie(id);
   if (!data) notFound();
 
-  const [movie, credits, videos, similar, recommendations, reviews, watchProviders, keywords, externalIds] =
+  const [movie, credits, videos, similar, recommendations, reviews, watchProviders, keywords, externalIds, releaseDates] =
     data;
+  const usCertification = releaseDates.results
+    .find((r) => r.iso_3166_1 === "US")
+    ?.release_dates.find((rd) => rd.certification)?.certification;
   const sessionId = await getSessionId();
   const accountStates = sessionId
     ? await getMovieAccountStates(id, sessionId).catch(() => null)
@@ -221,6 +226,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
                 Facts
               </Typography>
               <Stack spacing={1}>
+                <FactRow label="Content Rating" value={usCertification || "Not Rated"} />
                 <FactRow label="Status" value={movie.status} />
                 <FactRow
                   label="Original Language"

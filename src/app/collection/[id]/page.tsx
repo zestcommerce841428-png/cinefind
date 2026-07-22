@@ -7,7 +7,7 @@ import Image from "next/image";
 import { tmdbImage } from "@/lib/tmdb/config";
 import { TmdbError } from "@/lib/tmdb/fetcher";
 import { getCollectionDetails } from "@/lib/tmdb";
-import MediaGrid from "@/components/media/MediaGrid";
+import CollectionOrderToggle from "@/components/media/CollectionOrderToggle";
 
 export const revalidate = 3600;
 
@@ -64,7 +64,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4, maxWidth: 760 }}>
           {collection.overview}
         </Typography>
-        <MediaGrid items={collection.parts} mediaType="movie" />
+        <CollectionOrderToggle items={collection.parts} />
       </Container>
     </>
   );

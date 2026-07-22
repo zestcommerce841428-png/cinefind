@@ -84,9 +84,13 @@ const ROUTE_SEGMENT: Record<CompareKind, string> = {
 export default function ComparePickerForm({
   mediaType,
   kind,
+  destPath,
+  actionLabel,
 }: {
   mediaType?: "movie" | "tv";
   kind?: CompareKind;
+  destPath?: string;
+  actionLabel?: string;
 }) {
   const resolvedKind = kind ?? mediaType ?? "movie";
   const router = useRouter();
@@ -95,7 +99,8 @@ export default function ComparePickerForm({
 
   function handleCompare() {
     if (!a || !b) return;
-    router.push(`/compare/${ROUTE_SEGMENT[resolvedKind]}?a=${a.id}&b=${b.id}`);
+    const base = destPath ?? `/compare/${ROUTE_SEGMENT[resolvedKind]}`;
+    router.push(`${base}?a=${a.id}&b=${b.id}`);
   }
 
   const label = resolvedKind === "company" ? "studio" : resolvedKind === "person" ? "actor" : "title";
@@ -120,7 +125,7 @@ export default function ComparePickerForm({
           disabled={!a || !b}
           onClick={handleCompare}
         >
-          Compare
+          {actionLabel ?? "Compare"}
         </Button>
       </Grid>
     </Grid>

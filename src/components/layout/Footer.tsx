@@ -38,6 +38,11 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/compare", label: "Compare Anything" },
       { href: "/six-degrees", label: "Six Degrees of Separation" },
       { href: "/marathon", label: "Marathon Planner" },
+      { href: "/watch-party", label: "Watch Party Picker" },
+      { href: "/duel", label: "Movie Duel" },
+      { href: "/box-office", label: "Box Office Leaderboard" },
+      { href: "/reunions", label: "Cast Reunions" },
+      { href: "/insights/runtime", label: "Runtime Explorer" },
       { href: "/calendar", label: "Release Calendar" },
       { href: "/find", label: "Find by IMDb ID" },
       { href: "/blog", label: "Blog" },
@@ -46,6 +51,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
   {
     title: "Reference",
     links: [
+      { href: "/account/taste-profile", label: "Taste Profile" },
       { href: "/reference/languages", label: "Languages" },
       { href: "/reference/countries", label: "Countries" },
       { href: "/reference/certifications", label: "Content Ratings" },
