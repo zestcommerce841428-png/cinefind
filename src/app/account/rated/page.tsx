@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import AccountMediaTabs from "@/components/account/AccountMediaTabs";
 import ExportButtons from "@/components/account/ExportButtons";
+import SignInRequired from "@/components/account/SignInRequired";
 import { getAccountDetails, getRatedMovies, getRatedTv } from "@/lib/tmdb";
 import { getSessionId } from "@/lib/session";
 
@@ -16,7 +16,7 @@ export default async function RatedPage({
   searchParams: Promise<{ type?: string; page?: string }>;
 }) {
   const sessionId = await getSessionId();
-  if (!sessionId) redirect("/api/auth/login");
+  if (!sessionId) return <SignInRequired what="your ratings" />;
 
   const { type, page } = await searchParams;
   const activeTab = type === "tv" ? "tv" : "movie";

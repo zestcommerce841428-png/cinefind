@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import Link from "@/components/common/NextLink";
+import SignInRequired from "@/components/account/SignInRequired";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
@@ -28,7 +28,7 @@ export const revalidate = 0;
 
 export default async function AccountPage() {
   const sessionId = await getSessionId();
-  if (!sessionId) redirect("/api/auth/login");
+  if (!sessionId) return <SignInRequired what="your account" />;
 
   const account = await getAccountDetails(sessionId);
   const [favMovies, favTv, wlMovies, wlTv, ratedMovies, ratedTv] = await Promise.all([

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
@@ -8,6 +8,7 @@ import { getListDetails } from "@/lib/tmdb";
 import { getSessionId } from "@/lib/session";
 import MediaGrid from "@/components/media/MediaGrid";
 import DeleteListButton from "./DeleteListButton";
+import SignInRequired from "@/components/account/SignInRequired";
 
 export const revalidate = 0;
 
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function AccountListDetailPage({ params }: PageProps) {
   const sessionId = await getSessionId();
-  if (!sessionId) redirect("/api/auth/login");
+  if (!sessionId) return <SignInRequired what="this list" />;
 
   const { id } = await params;
   let list;

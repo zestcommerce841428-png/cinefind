@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import Link from "@/components/common/NextLink";
+import SignInRequired from "@/components/account/SignInRequired";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -18,7 +18,7 @@ export const revalidate = 0;
 
 export default async function AccountListsPage() {
   const sessionId = await getSessionId();
-  if (!sessionId) redirect("/api/auth/login");
+  if (!sessionId) return <SignInRequired what="your lists" />;
 
   const account = await getAccountDetails(sessionId);
   const lists = await getAccountLists(account.id, sessionId);

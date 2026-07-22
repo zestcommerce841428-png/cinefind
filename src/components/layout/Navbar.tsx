@@ -141,7 +141,7 @@ export default function Navbar({ isAuthenticated = false }: { isAuthenticated?: 
           </IconButton>
         ) : (
           <Button
-            component={Link}
+            component="a"
             href="/api/auth/login"
             variant="outlined"
             size="small"

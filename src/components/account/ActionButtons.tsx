@@ -11,7 +11,6 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-import Link from "next/link";
 
 interface ActionButtonsProps {
   mediaType: "movie" | "tv";
@@ -84,7 +83,7 @@ export default function ActionButtons({
             }}
           />
           <Typography variant="body2" color="text.secondary">
-            Rate as guest, or <Link href="/api/auth/login">sign in with TMDB</Link> for favorites
+            Rate as guest, or <a href="/api/auth/login">sign in with TMDB</a> for favorites
             and watchlist.
           </Typography>
         </Stack>
