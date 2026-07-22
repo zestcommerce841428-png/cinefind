@@ -53,6 +53,7 @@ const FEATURE_GROUPS: { title: string; features: Feature[] }[] = [
   {
     title: "Personalize",
     features: [
+      { emoji: "❤️", title: "Favorite & Rate Anything", description: "Like, watchlist, and rate movies and TV shows alike — synced to your account.", href: "/tv/popular" },
       { emoji: "🍿", title: "Marathon Planner", description: "Build a lineup and see total runtime + a schedule.", href: "/marathon" },
       { emoji: "⌘", title: "Command Palette", description: "Press ⌘K to search or jump anywhere instantly.", href: "/genres" },
       { emoji: "🎨", title: "70+ Themes & Accessibility", description: "Deep theming plus 20+ real accessibility controls.", href: "/accessibility" },
