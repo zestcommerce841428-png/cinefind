@@ -9,6 +9,7 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import { tmdbImage } from "@/lib/tmdb/config";
 import RatingBadge from "./RatingBadge";
+import TrailerPlayButton from "./TrailerPlayButton";
 
 interface DetailHeroProps {
   title: string;
@@ -21,6 +22,9 @@ interface DetailHeroProps {
   genres: { id: number; name: string }[];
   metaChips?: string[];
   actions?: React.ReactNode;
+  mediaType?: "movie" | "tv";
+  mediaId?: number;
+  trailerKey?: string | null;
 }
 
 export default function DetailHero({
@@ -34,6 +38,9 @@ export default function DetailHero({
   genres,
   metaChips = [],
   actions,
+  mediaType,
+  mediaId,
+  trailerKey,
 }: DetailHeroProps) {
   const backdrop = tmdbImage(backdropPath, "original");
   const poster = tmdbImage(posterPath, "w500");
@@ -51,6 +58,19 @@ export default function DetailHero({
                 `linear-gradient(to top, ${t.palette.background.default} 5%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.5))`,
             }}
           />
+          {mediaType && mediaId && (
+            <Box
+              sx={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <TrailerPlayButton mediaType={mediaType} mediaId={mediaId} videoKey={trailerKey} size={72} />
+            </Box>
+          )}
         </Box>
       )}
       <Container maxWidth="lg" sx={{ position: "relative", pt: { xs: 4, md: 10 }, pb: 4 }}>

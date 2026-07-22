@@ -43,7 +43,7 @@ export default async function GenresPage() {
         </Box>
       </Box>
 
-      <Box component="section">
+      <Box component="section" sx={{ mb: 5 }}>
         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
           TV Genres
         </Typography>
@@ -58,6 +58,21 @@ export default async function GenresPage() {
               sx={{ fontSize: 15, py: 2.5, px: 1 }}
             />
           ))}
+        </Box>
+      </Box>
+
+      <Box component="section">
+        <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+          More Ways to Browse
+        </Typography>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
+          <Chip component={Link} href="/moods" label="🎭 Browse by Mood" clickable sx={{ fontSize: 15, py: 2.5, px: 1 }} />
+          <Chip component={Link} href="/hidden-gems" label="💎 Hidden Gems" clickable sx={{ fontSize: 15, py: 2.5, px: 1 }} />
+          <Chip component={Link} href="/movies/short" label="⏱️ Short Movies" clickable sx={{ fontSize: 15, py: 2.5, px: 1 }} />
+          <Chip component={Link} href="/movies/epic" label="🎬 Epic Movies" clickable sx={{ fontSize: 15, py: 2.5, px: 1 }} />
+          <Chip component={Link} href="/marathon" label="🍿 Marathon Planner" clickable sx={{ fontSize: 15, py: 2.5, px: 1 }} />
+          <Chip component={Link} href="/six-degrees" label="🔗 Six Degrees" clickable sx={{ fontSize: 15, py: 2.5, px: 1 }} />
+          <Chip component={Link} href="/calendar" label="📅 Release Calendar" clickable sx={{ fontSize: 15, py: 2.5, px: 1 }} />
         </Box>
       </Box>
     </Container>

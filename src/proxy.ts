@@ -6,17 +6,29 @@ import { NextResponse, type NextRequest } from "next/server";
 // load balancer, swap this for a shared store (Redis/Upstash) so limits are
 // enforced consistently across instances.
 const WINDOW_MS = 60_000;
-const MAX_REQUESTS_PER_WINDOW = 30;
 const hits = new Map<string, { count: number; resetAt: number }>();
 
-function getClientKey(request: NextRequest): string {
+// Read-only browsing/search traffic (autocomplete, command palette, quick
+// search) is generously capped — it just proxies public TMDB catalog data,
+// so there's no reason to throttle normal usage. Mutating account/list
+// endpoints keep a tight cap since they write to a user's TMDB account.
+const RATE_LIMITS: { prefix: string; max: number }[] = [
+  { prefix: "/api/search/", max: 600 },
+  { prefix: "/api/six-degrees", max: 120 },
+  { prefix: "/api/recommendations", max: 300 },
+  { prefix: "/api/guest/", max: 60 },
+  { prefix: "/api/account/", max: 60 },
+  { prefix: "/api/lists", max: 60 },
+];
+
+function getClientKey(request: NextRequest, prefix: string): string {
   const forwardedFor = request.headers.get("x-forwarded-for");
   const ip = forwardedFor?.split(",")[0]?.trim() || "unknown";
-  return `${ip}:${new URL(request.url).pathname}`;
+  return `${ip}:${prefix}`;
 }
 
-function isRateLimited(request: NextRequest): boolean {
-  const key = getClientKey(request);
+function isRateLimited(request: NextRequest, prefix: string, max: number): boolean {
+  const key = getClientKey(request, prefix);
   const now = Date.now();
   const entry = hits.get(key);
 
@@ -26,11 +38,10 @@ function isRateLimited(request: NextRequest): boolean {
   }
 
   entry.count += 1;
-  return entry.count > MAX_REQUESTS_PER_WINDOW;
+  return entry.count > max;
 }
 
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
-const RATE_LIMITED_PREFIXES = ["/api/guest/", "/api/search/", "/api/account/", "/api/lists"];
 
 export function proxy(request: NextRequest) {
   const { pathname } = new URL(request.url);
@@ -51,13 +62,12 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  if (RATE_LIMITED_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
-    if (isRateLimited(request)) {
-      return NextResponse.json(
-        { success: false, message: "Too many requests. Please slow down." },
-        { status: 429, headers: { "Retry-After": "60" } }
-      );
-    }
+  const limit = RATE_LIMITS.find((r) => pathname.startsWith(r.prefix));
+  if (limit && isRateLimited(request, limit.prefix, limit.max)) {
+    return NextResponse.json(
+      { success: false, message: "Too many requests. Please slow down." },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
   }
 
   return NextResponse.next();

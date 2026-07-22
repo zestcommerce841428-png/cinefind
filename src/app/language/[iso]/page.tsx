@@ -32,10 +32,8 @@ export default async function LanguagePage({ params, searchParams }: PageProps) 
   const name = await getLanguageName(iso);
   if (!name) notFound();
 
-  const data = await discoverMovies({
-    with_original_language: iso,
-    page: Number(page) || 1,
-  });
+  const discoverParams = { with_original_language: iso };
+  const data = await discoverMovies({ ...discoverParams, page: Number(page) || 1 });
 
   return (
     <ListingPage
@@ -44,6 +42,7 @@ export default async function LanguagePage({ params, searchParams }: PageProps) 
       basePath={`/language/${iso}`}
       data={data}
       mediaType="movie"
+      discoverParams={discoverParams}
     />
   );
 }

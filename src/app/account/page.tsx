@@ -62,6 +62,9 @@ export default async function AccountPage() {
         <Button component={Link} href="/account/lists" variant="outlined">
           My Lists
         </Button>
+        <Button component="a" href="/api/export/all" variant="outlined">
+          Download Full Backup
+        </Button>
         <form action="/api/auth/logout" method="post">
           <Button type="submit" variant="outlined" color="inherit">
             Sign Out

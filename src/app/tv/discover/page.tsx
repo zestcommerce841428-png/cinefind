@@ -25,15 +25,15 @@ interface DiscoverTvPageProps {
 
 export default async function DiscoverTvPage({ searchParams }: DiscoverTvPageProps) {
   const params = await searchParams;
+  const discoverParams = {
+    sort_by: params.sort_by,
+    with_genres: params.with_genres,
+    first_air_date_year: params.year ? Number(params.year) : undefined,
+    with_watch_providers: params.with_watch_providers,
+    watch_region: params.with_watch_providers ? (params.watch_region ?? "US") : undefined,
+  };
   const [data, genresData] = await Promise.all([
-    discoverTv({
-      page: Number(params.page) || 1,
-      sort_by: params.sort_by,
-      with_genres: params.with_genres,
-      first_air_date_year: params.year ? Number(params.year) : undefined,
-      with_watch_providers: params.with_watch_providers,
-      watch_region: params.with_watch_providers ? (params.watch_region ?? "US") : undefined,
-    }),
+    discoverTv({ ...discoverParams, page: Number(params.page) || 1 }),
     getTvGenres(),
   ]);
 
@@ -58,6 +58,7 @@ export default async function DiscoverTvPage({ searchParams }: DiscoverTvPagePro
           with_watch_providers: params.with_watch_providers,
           watch_region: params.watch_region,
         }}
+        discoverParams={discoverParams}
         bare
       />
     </Container>

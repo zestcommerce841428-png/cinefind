@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import DetailHero from "@/components/media/DetailHero";
 import ReleaseCountdown from "@/components/media/ReleaseCountdown";
+import AddToMarathonButton from "@/components/media/AddToMarathonButton";
 import CastRow from "@/components/media/CastRow";
 import VideoGallery from "@/components/media/VideoGallery";
 import WatchProviders from "@/components/media/WatchProviders";
@@ -144,6 +145,14 @@ export default async function MoviePage({ params }: MoviePageProps) {
           .join(" • ")}
         genres={movie.genres}
         metaChips={[movie.status]}
+        mediaType="movie"
+        mediaId={movie.id}
+        trailerKey={
+          videos.results.find((v) => v.site === "YouTube" && v.type === "Trailer" && v.official)?.key ??
+          videos.results.find((v) => v.site === "YouTube" && v.type === "Trailer")?.key ??
+          videos.results.find((v) => v.site === "YouTube")?.key ??
+          null
+        }
         actions={
           <Stack direction="row" sx={{ gap: 1.5, alignItems: "center", flexWrap: "wrap" }}>
             <ActionButtons
@@ -156,6 +165,12 @@ export default async function MoviePage({ params }: MoviePageProps) {
             />
             <ShareButton title={movie.title} text={movie.overview} />
             {movie.release_date && <ReleaseCountdown releaseDate={movie.release_date} />}
+            <AddToMarathonButton
+              id={movie.id}
+              title={movie.title}
+              posterPath={movie.poster_path}
+              runtime={movie.runtime ?? 0}
+            />
           </Stack>
         }
       />

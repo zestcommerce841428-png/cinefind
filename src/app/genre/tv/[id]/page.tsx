@@ -41,6 +41,7 @@ export default async function GenreTvPage({ params, searchParams }: PageProps) {
       basePath={`/genre/tv/${id}`}
       data={data}
       mediaType="tv"
+      discoverParams={{ with_genres: id }}
     />
   );
 }

@@ -151,6 +151,14 @@ export default async function TvPage({ params }: TvPageProps) {
           .join(" ")}
         genres={tv.genres}
         metaChips={[tv.status, usRating].filter(Boolean) as string[]}
+        mediaType="tv"
+        mediaId={tv.id}
+        trailerKey={
+          videos.results.find((v) => v.site === "YouTube" && v.type === "Trailer" && v.official)?.key ??
+          videos.results.find((v) => v.site === "YouTube" && v.type === "Trailer")?.key ??
+          videos.results.find((v) => v.site === "YouTube")?.key ??
+          null
+        }
         actions={
           <Stack direction="row" sx={{ gap: 1.5, alignItems: "center", flexWrap: "wrap" }}>
             <ActionButtons

@@ -16,6 +16,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { tmdbImage } from "@/lib/tmdb/config";
 import type { MovieSummary } from "@/lib/tmdb/types";
 import { useAppSettings } from "@/theme/AppSettingsContext";
+import TrailerPlayButton from "./TrailerPlayButton";
 
 export default function HeroCarousel({ items }: { items: MovieSummary[] }) {
   const [index, setIndex] = React.useState(0);
@@ -62,6 +63,21 @@ export default function HeroCarousel({ items }: { items: MovieSummary[] }) {
             "linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.2) 60%), linear-gradient(to right, rgba(0,0,0,0.6), transparent 60%)",
         }}
       />
+      <Box
+        sx={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "none",
+        }}
+      >
+        <Box sx={{ pointerEvents: "auto", position: "relative" }}>
+          <TrailerPlayButton mediaType="movie" mediaId={current.id} size={80} />
+        </Box>
+      </Box>
+
       <Box
         sx={{
           position: "absolute",

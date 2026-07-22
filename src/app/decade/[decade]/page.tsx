@@ -35,12 +35,12 @@ export default async function DecadePage({ params, searchParams }: PageProps) {
   const start = parseDecade(decade);
   if (start === null) notFound();
 
-  const data = await discoverMovies({
+  const discoverParams = {
     "primary_release_date.gte": `${start}-01-01`,
     "primary_release_date.lte": `${start + 9}-12-31`,
     "vote_count.gte": 20,
-    page: Number(page) || 1,
-  });
+  };
+  const data = await discoverMovies({ ...discoverParams, page: Number(page) || 1 });
 
   return (
     <ListingPage
@@ -49,6 +49,7 @@ export default async function DecadePage({ params, searchParams }: PageProps) {
       basePath={`/decade/${decade}`}
       data={data}
       mediaType="movie"
+      discoverParams={discoverParams}
     />
   );
 }

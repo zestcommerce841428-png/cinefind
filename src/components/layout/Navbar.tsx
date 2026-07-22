@@ -26,6 +26,7 @@ const NAV_LINKS = [
   { href: "/tv", label: "TV Shows" },
   { href: "/people", label: "People" },
   { href: "/trending", label: "Trending" },
+  { href: "/moods", label: "Moods" },
   { href: "/blog", label: "Blog" },
 ];
 

@@ -96,6 +96,7 @@ export interface DiscoverMovieParams {
   "vote_average.gte"?: number;
   "vote_average.lte"?: number;
   "vote_count.gte"?: number;
+  "vote_count.lte"?: number;
   with_original_language?: string;
   with_origin_country?: string;
   with_watch_providers?: string;

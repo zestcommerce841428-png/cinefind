@@ -25,15 +25,15 @@ interface DiscoverMoviePageProps {
 
 export default async function DiscoverMoviePage({ searchParams }: DiscoverMoviePageProps) {
   const params = await searchParams;
+  const discoverParams = {
+    sort_by: params.sort_by,
+    with_genres: params.with_genres,
+    primary_release_year: params.year ? Number(params.year) : undefined,
+    with_watch_providers: params.with_watch_providers,
+    watch_region: params.with_watch_providers ? (params.watch_region ?? "US") : undefined,
+  };
   const [data, genresData] = await Promise.all([
-    discoverMovies({
-      page: Number(params.page) || 1,
-      sort_by: params.sort_by,
-      with_genres: params.with_genres,
-      primary_release_year: params.year ? Number(params.year) : undefined,
-      with_watch_providers: params.with_watch_providers,
-      watch_region: params.with_watch_providers ? (params.watch_region ?? "US") : undefined,
-    }),
+    discoverMovies({ ...discoverParams, page: Number(params.page) || 1 }),
     getMovieGenres(),
   ]);
 
@@ -58,6 +58,7 @@ export default async function DiscoverMoviePage({ searchParams }: DiscoverMovieP
           with_watch_providers: params.with_watch_providers,
           watch_region: params.watch_region,
         }}
+        discoverParams={discoverParams}
         bare
       />
     </Container>

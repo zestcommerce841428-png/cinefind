@@ -10,6 +10,7 @@ import AccessibilityEffects from "./AccessibilityEffects";
 import UnifiedSettingsPanel from "./UnifiedSettingsPanel";
 import WebVitals from "./WebVitals";
 import CommandPalette from "./CommandPalette";
+import KeyboardShortcutsDialog from "./KeyboardShortcutsDialog";
 
 export default function GlobalWidgets() {
   const [panelOpen, setPanelOpen] = React.useState(false);
@@ -20,6 +21,7 @@ export default function GlobalWidgets() {
       <AccessibilityEffects />
       <ScrollButtons />
       <CommandPalette />
+      <KeyboardShortcutsDialog />
 
       <Box
         data-print-hide

@@ -10,6 +10,9 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Chip from "@mui/material/Chip";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import ToggleButton from "@mui/material/ToggleButton";
+import Tooltip from "@mui/material/Tooltip";
 import type { Genre } from "@/lib/tmdb/types";
 
 const SORT_OPTIONS = [
@@ -30,8 +33,10 @@ export default function DiscoverFilters({ basePath, genres }: DiscoverFiltersPro
   const searchParams = useSearchParams();
 
   const sortBy = searchParams.get("sort_by") ?? "popularity.desc";
-  const selectedGenres = (searchParams.get("with_genres") ?? "")
-    .split(",")
+  const rawGenres = searchParams.get("with_genres") ?? "";
+  const genreMode: "and" | "or" = rawGenres.includes("|") ? "or" : "and";
+  const selectedGenres = rawGenres
+    .split(/[,|]/)
     .filter(Boolean)
     .map(Number);
   const year = searchParams.get("year") ?? "";
@@ -67,15 +72,15 @@ export default function DiscoverFilters({ basePath, genres }: DiscoverFiltersPro
           </FormControl>
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 4 }}>
+        <Grid size={{ xs: 12, sm: 5 }}>
           <FormControl fullWidth size="small">
-            <InputLabel id="genre-label">Genres</InputLabel>
+            <InputLabel id="genre-label">Genres (unlimited)</InputLabel>
             <Select
               labelId="genre-label"
               multiple
-              label="Genres"
+              label="Genres (unlimited)"
               value={selectedGenres}
-              input={<OutlinedInput label="Genres" />}
+              input={<OutlinedInput label="Genres (unlimited)" />}
               renderValue={(selected) => (
                 <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
                   {(selected as number[]).map((id) => (
@@ -86,7 +91,8 @@ export default function DiscoverFilters({ basePath, genres }: DiscoverFiltersPro
               onChange={(e) => {
                 const value = e.target.value;
                 const arr = typeof value === "string" ? value.split(",").map(Number) : (value as number[]);
-                updateParams({ with_genres: arr.join(",") || null });
+                const separator = genreMode === "or" ? "|" : ",";
+                updateParams({ with_genres: arr.join(separator) || null });
               }}
             >
               {genres.map((g) => (
@@ -96,6 +102,25 @@ export default function DiscoverFilters({ basePath, genres }: DiscoverFiltersPro
               ))}
             </Select>
           </FormControl>
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: "auto" }}>
+          <Tooltip title="Match ALL selected genres, or ANY of them — pick as many genres as you like, there's no cap">
+            <ToggleButtonGroup
+              exclusive
+              size="small"
+              value={genreMode}
+              onChange={(_, mode) => {
+                if (!mode || selectedGenres.length === 0) return;
+                const separator = mode === "or" ? "|" : ",";
+                updateParams({ with_genres: selectedGenres.join(separator) });
+              }}
+              sx={{ height: 40 }}
+            >
+              <ToggleButton value="and">Match ALL</ToggleButton>
+              <ToggleButton value="or">Match ANY</ToggleButton>
+            </ToggleButtonGroup>
+          </Tooltip>
         </Grid>
 
         <Grid size={{ xs: 12, sm: 4 }}>

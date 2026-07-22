@@ -32,10 +32,8 @@ export default async function CountryPage({ params, searchParams }: PageProps) {
   const name = await getCountryName(iso);
   if (!name) notFound();
 
-  const data = await discoverMovies({
-    with_origin_country: iso.toUpperCase(),
-    page: Number(page) || 1,
-  });
+  const discoverParams = { with_origin_country: iso.toUpperCase() };
+  const data = await discoverMovies({ ...discoverParams, page: Number(page) || 1 });
 
   return (
     <ListingPage
@@ -44,6 +42,7 @@ export default async function CountryPage({ params, searchParams }: PageProps) {
       basePath={`/country/${iso}`}
       data={data}
       mediaType="movie"
+      discoverParams={discoverParams}
     />
   );
 }

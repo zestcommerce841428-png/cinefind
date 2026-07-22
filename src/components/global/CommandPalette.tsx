@@ -35,6 +35,12 @@ const STATIC_DESTINATIONS = [
   { label: "Advanced Search", href: "/search/advanced" },
   { label: "Random Movie", href: "/random/movie" },
   { label: "Developers", href: "/developers" },
+  { label: "Hidden Gems", href: "/hidden-gems" },
+  { label: "Browse by Mood", href: "/moods" },
+  { label: "Marathon Planner", href: "/marathon" },
+  { label: "Short Movies (Under 90 min)", href: "/movies/short" },
+  { label: "Epic Movies (2.5hrs+)", href: "/movies/epic" },
+  { label: "Studio Showdown", href: "/compare/company" },
 ];
 
 export default function CommandPalette() {
