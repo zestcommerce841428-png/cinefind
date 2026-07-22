@@ -9,6 +9,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
   {
     title: "Explore",
     links: [
+      { href: "/discover", label: "Discover Feed" },
       { href: "/movies", label: "Movies" },
       { href: "/tv", label: "TV Shows" },
       { href: "/people", label: "People" },
@@ -54,7 +55,6 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
   {
     title: "Company",
     links: [
-      { href: "/welcome", label: "Welcome / Tour" },
       { href: "/about", label: "About" },
       { href: "/changelog", label: "Changelog" },
       { href: "/accessibility", label: "Accessibility" },

@@ -22,7 +22,7 @@ import ThemeToggle from "./ThemeToggle";
 import VoiceSearchButton from "./VoiceSearchButton";
 
 const NAV_LINKS = [
-  { href: "/", label: "Home" },
+  { href: "/discover", label: "Discover" },
   { href: "/movies", label: "Movies" },
   { href: "/tv", label: "TV Shows" },
   { href: "/people", label: "People" },

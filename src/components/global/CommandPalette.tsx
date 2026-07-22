@@ -23,6 +23,7 @@ interface QuickResult {
 }
 
 const STATIC_DESTINATIONS = [
+  { label: "Discover Feed", href: "/discover" },
   { label: "Trending", href: "/trending" },
   { label: "Discover Movies", href: "/movies/discover" },
   { label: "Discover TV", href: "/tv/discover" },
@@ -41,7 +42,6 @@ const STATIC_DESTINATIONS = [
   { label: "Short Movies (Under 90 min)", href: "/movies/short" },
   { label: "Epic Movies (2.5hrs+)", href: "/movies/epic" },
   { label: "Studio Showdown", href: "/compare/company" },
-  { label: "Welcome / Tour", href: "/welcome" },
   { label: "Franchises", href: "/franchises" },
   { label: "New Seasons", href: "/new-seasons" },
   { label: "Site Map", href: "/site-map" },
