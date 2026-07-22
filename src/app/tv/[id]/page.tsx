@@ -17,6 +17,7 @@ import MediaRow from "@/components/media/MediaRow";
 import ActionButtons from "@/components/account/ActionButtons";
 import EmbedWidget from "@/components/media/EmbedWidget";
 import ShareButton from "@/components/media/ShareButton";
+import ReleaseCountdown from "@/components/media/ReleaseCountdown";
 import BreadcrumbJsonLd from "@/components/common/BreadcrumbJsonLd";
 import RecentlyViewedRecorder from "@/components/media/RecentlyViewedRecorder";
 import { tmdbImage } from "@/lib/tmdb/config";
@@ -170,6 +171,12 @@ export default async function TvPage({ params }: TvPageProps) {
               initialRating={ratedValue}
             />
             <ShareButton title={tv.name} text={tv.overview} />
+            {tv.next_episode_to_air?.air_date && (
+              <ReleaseCountdown
+                releaseDate={tv.next_episode_to_air.air_date}
+                verb={`New episode (S${tv.next_episode_to_air.season_number}E${tv.next_episode_to_air.episode_number})`}
+              />
+            )}
           </Stack>
         }
       />

@@ -4,6 +4,8 @@ import Typography from "@mui/material/Typography";
 import AccountMediaTabs from "@/components/account/AccountMediaTabs";
 import ExportButtons from "@/components/account/ExportButtons";
 import SignInRequired from "@/components/account/SignInRequired";
+import PosterWallExport from "@/components/media/PosterWallExport";
+import Stack from "@mui/material/Stack";
 import { getAccountDetails, getRatedMovies, getRatedTv } from "@/lib/tmdb";
 import { getSessionId } from "@/lib/session";
 
@@ -33,7 +35,16 @@ export default async function RatedPage({
       <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>
         My Ratings
       </Typography>
-      <ExportButtons type="ratings" />
+      <Stack direction="row" spacing={1.5} sx={{ mb: 3, flexWrap: "wrap" }}>
+        <ExportButtons type="ratings" />
+        <PosterWallExport
+          items={[...movies.results, ...tv.results].map((m) => ({
+            title: "title" in m ? m.title : m.name,
+            posterPath: m.poster_path,
+          }))}
+          filename="cinefind-ratings"
+        />
+      </Stack>
       <AccountMediaTabs
         basePath="/account/rated"
         activeTab={activeTab}

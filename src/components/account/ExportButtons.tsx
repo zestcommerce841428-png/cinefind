@@ -4,7 +4,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 
 export default function ExportButtons({ type }: { type: "favorites" | "watchlist" | "ratings" }) {
   return (
-    <Stack direction="row" spacing={1.5} sx={{ mb: 3 }}>
+    <Stack direction="row" spacing={1.5}>
       <Button
         size="small"
         variant="outlined"

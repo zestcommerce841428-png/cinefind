@@ -16,12 +16,13 @@ interface TitleOption {
   poster_path: string | null;
 }
 
-export type CompareKind = "movie" | "tv" | "company";
+export type CompareKind = "movie" | "tv" | "company" | "person";
 
 const SEARCH_ENDPOINTS: Record<CompareKind, string> = {
   movie: "/api/search/movies",
   tv: "/api/search/tv",
   company: "/api/search/companies",
+  person: "/api/search/people",
 };
 
 function TitleAutocomplete({
@@ -77,6 +78,7 @@ const ROUTE_SEGMENT: Record<CompareKind, string> = {
   movie: "movie",
   tv: "tv",
   company: "company",
+  person: "person",
 };
 
 export default function ComparePickerForm({
@@ -96,7 +98,7 @@ export default function ComparePickerForm({
     router.push(`/compare/${ROUTE_SEGMENT[resolvedKind]}?a=${a.id}&b=${b.id}`);
   }
 
-  const label = resolvedKind === "company" ? "studio" : "title";
+  const label = resolvedKind === "company" ? "studio" : resolvedKind === "person" ? "actor" : "title";
 
   return (
     <Grid container spacing={2} sx={{ alignItems: "center", mb: 4 }}>

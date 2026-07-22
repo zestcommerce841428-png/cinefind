@@ -62,7 +62,18 @@ export default async function CertificationsPage({
               .sort((a, b) => a.order - b.order)
               .map((cert) => (
                 <Stack key={cert.certification} direction="row" sx={{ gap: 1.5, alignItems: "flex-start" }}>
-                  <Chip label={cert.certification} size="small" sx={{ fontWeight: 700, minWidth: 56 }} />
+                  {activeType === "movie" ? (
+                    <Chip
+                      component={Link}
+                      href={`/certification/${country}/${encodeURIComponent(cert.certification)}`}
+                      clickable
+                      label={cert.certification}
+                      size="small"
+                      sx={{ fontWeight: 700, minWidth: 56 }}
+                    />
+                  ) : (
+                    <Chip label={cert.certification} size="small" sx={{ fontWeight: 700, minWidth: 56 }} />
+                  )}
                   <Typography variant="body2" color="text.secondary">
                     {cert.meaning}
                   </Typography>

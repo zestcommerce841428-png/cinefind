@@ -101,6 +101,8 @@ export interface TvDetails extends TvSummary {
   in_production: boolean;
   languages: string[];
   last_air_date: string;
+  last_episode_to_air: EpisodeAirInfo | null;
+  next_episode_to_air: EpisodeAirInfo | null;
   networks: ProductionCompany[];
   number_of_episodes: number;
   number_of_seasons: number;
@@ -111,6 +113,16 @@ export interface TvDetails extends TvSummary {
   status: string;
   tagline: string;
   type: string;
+}
+
+export interface EpisodeAirInfo {
+  id: number;
+  name: string;
+  overview: string;
+  air_date: string | null;
+  episode_number: number;
+  season_number: number;
+  runtime: number | null;
 }
 
 export interface SeasonSummary {

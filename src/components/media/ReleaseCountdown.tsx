@@ -10,7 +10,13 @@ function daysUntil(dateStr: string) {
   return Math.ceil((target - now) / (1000 * 60 * 60 * 24));
 }
 
-export default function ReleaseCountdown({ releaseDate }: { releaseDate: string }) {
+export default function ReleaseCountdown({
+  releaseDate,
+  verb = "Releases",
+}: {
+  releaseDate: string;
+  verb?: string;
+}) {
   const days = daysUntil(releaseDate);
   if (days <= 0) return null;
 
@@ -20,7 +26,7 @@ export default function ReleaseCountdown({ releaseDate }: { releaseDate: string 
       color="info"
       variant="outlined"
       size="small"
-      label={days === 1 ? "Releases tomorrow" : `Releases in ${days} days`}
+      label={days === 1 ? `${verb} tomorrow` : `${verb} in ${days} days`}
     />
   );
 }

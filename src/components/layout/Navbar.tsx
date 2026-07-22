@@ -19,6 +19,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import LocalMoviesIcon from "@mui/icons-material/LocalMovies";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ThemeToggle from "./ThemeToggle";
+import VoiceSearchButton from "./VoiceSearchButton";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -131,6 +132,12 @@ export default function Navbar({ isAuthenticated = false }: { isAuthenticated?: 
             onChange={(e) => setQuery(e.target.value)}
             fullWidth
             inputProps={{ "aria-label": "Search movies, TV shows, and people" }}
+          />
+          <VoiceSearchButton
+            onResult={(text) => {
+              setQuery(text);
+              router.push(`/search?q=${encodeURIComponent(text)}`);
+            }}
           />
         </Box>
 
