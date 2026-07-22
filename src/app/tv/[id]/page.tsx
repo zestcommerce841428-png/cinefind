@@ -16,6 +16,7 @@ import SeasonList from "@/components/media/SeasonList";
 import MediaRow from "@/components/media/MediaRow";
 import ActionButtons from "@/components/account/ActionButtons";
 import EmbedWidget from "@/components/media/EmbedWidget";
+import ExternalLinks from "@/components/media/ExternalLinks";
 import ShareButton from "@/components/media/ShareButton";
 import ReleaseCountdown from "@/components/media/ReleaseCountdown";
 import BreadcrumbJsonLd from "@/components/common/BreadcrumbJsonLd";
@@ -34,6 +35,7 @@ import {
   getTvKeywords,
   getTvContentRatings,
   getTvAccountStates,
+  getTvExternalIds,
 } from "@/lib/tmdb";
 
 export const revalidate = 3600;
@@ -54,6 +56,7 @@ async function loadTv(id: string) {
       getTvWatchProviders(id),
       getTvKeywords(id),
       getTvContentRatings(id),
+      getTvExternalIds(id),
     ]);
   } catch (err) {
     if (err instanceof TmdbError && err.status === 404) return null;
@@ -86,7 +89,8 @@ export default async function TvPage({ params }: TvPageProps) {
   const data = await loadTv(id);
   if (!data) notFound();
 
-  const [tv, credits, videos, similar, recommendations, reviews, watchProviders, keywords, ratings] = data;
+  const [tv, credits, videos, similar, recommendations, reviews, watchProviders, keywords, ratings, externalIds] =
+    data;
 
   const usRating = ratings.results.find((r) => r.iso_3166_1 === "US")?.rating;
   const sessionId = await getSessionId();
@@ -216,17 +220,10 @@ export default async function TvPage({ params }: TvPageProps) {
                   label="Networks"
                   value={tv.networks?.map((n) => n.name).join(", ") || "—"}
                 />
-                {tv.homepage && (
-                  <FactRow
-                    label="Homepage"
-                    value={
-                      <a href={tv.homepage} target="_blank" rel="noopener noreferrer">
-                        Visit site
-                      </a>
-                    }
-                  />
-                )}
               </Stack>
+              <Box sx={{ mt: 1.5 }}>
+                <ExternalLinks homepage={tv.homepage} externalIds={externalIds} />
+              </Box>
             </Box>
 
             <Box component="section" sx={{ mb: 4 }}>

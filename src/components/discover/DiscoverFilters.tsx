@@ -23,12 +23,23 @@ const SORT_OPTIONS = [
   { value: "revenue.desc", label: "Highest Revenue" },
 ];
 
+const RELEASE_TYPES = [
+  { value: "1", label: "Premiere" },
+  { value: "2", label: "Limited Theatrical" },
+  { value: "3", label: "Theatrical" },
+  { value: "4", label: "Digital" },
+  { value: "5", label: "Physical" },
+  { value: "6", label: "TV" },
+];
+
 interface DiscoverFiltersProps {
   basePath: string;
   genres: Genre[];
+  /** Movie discover only — TMDB's discover/tv has no concept of release type. */
+  showReleaseTypeFilter?: boolean;
 }
 
-export default function DiscoverFilters({ basePath, genres }: DiscoverFiltersProps) {
+export default function DiscoverFilters({ basePath, genres, showReleaseTypeFilter = false }: DiscoverFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -40,6 +51,9 @@ export default function DiscoverFilters({ basePath, genres }: DiscoverFiltersPro
     .filter(Boolean)
     .map(Number);
   const year = searchParams.get("year") ?? "";
+  const releaseTypes = (searchParams.get("with_release_type") ?? "")
+    .split("|")
+    .filter(Boolean);
 
   function updateParams(updates: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
@@ -141,6 +155,39 @@ export default function DiscoverFilters({ basePath, genres }: DiscoverFiltersPro
             </Select>
           </FormControl>
         </Grid>
+
+        {showReleaseTypeFilter && (
+          <Grid size={12}>
+            <FormControl fullWidth size="small">
+              <InputLabel id="release-type-label">Release Type</InputLabel>
+              <Select
+                labelId="release-type-label"
+                multiple
+                label="Release Type"
+                value={releaseTypes}
+                input={<OutlinedInput label="Release Type" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+                    {(selected as string[]).map((v) => (
+                      <Chip key={v} label={RELEASE_TYPES.find((r) => r.value === v)?.label ?? v} size="small" />
+                    ))}
+                  </Box>
+                )}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const arr = typeof value === "string" ? value.split(",") : value;
+                  updateParams({ with_release_type: arr.join("|") || null });
+                }}
+              >
+                {RELEASE_TYPES.map((r) => (
+                  <MenuItem key={r.value} value={r.value}>
+                    {r.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        )}
       </Grid>
     </Box>
   );

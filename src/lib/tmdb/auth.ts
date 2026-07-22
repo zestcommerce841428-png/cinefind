@@ -118,6 +118,18 @@ export async function rateMediaAsGuest(
   return res.json() as Promise<{ success: boolean; status_message: string }>;
 }
 
+export const getGuestSessionRatedMovies = (guestSessionId: string, page = 1) =>
+  tmdbFetch<PaginatedResponse<MovieSummary & { rating: number }>>(
+    `/guest_session/${guestSessionId}/rated/movies`,
+    { params: { page }, revalidate: 0 }
+  );
+
+export const getGuestSessionRatedTv = (guestSessionId: string, page = 1) =>
+  tmdbFetch<PaginatedResponse<TvSummary & { rating: number }>>(
+    `/guest_session/${guestSessionId}/rated/tv`,
+    { params: { page }, revalidate: 0 }
+  );
+
 export async function deleteRating(mediaType: "movie" | "tv", mediaId: number, sessionId: string) {
   const res = await fetch(
     `${TMDB_BASE_URL}/${mediaType}/${mediaId}/rating?session_id=${sessionId}`,

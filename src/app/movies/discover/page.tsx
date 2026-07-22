@@ -8,7 +8,7 @@ import { discoverMovies, getMovieGenres } from "@/lib/tmdb";
 export const revalidate = 1800;
 export const metadata: Metadata = {
   title: "Discover Movies",
-  description: "Filter and discover movies by genre, release year, and sort order.",
+  description: "Filter and discover movies by genre, release year, release type, and sort order.",
   alternates: { canonical: "/movies/discover" },
 };
 
@@ -20,6 +20,7 @@ interface DiscoverMoviePageProps {
     year?: string;
     with_watch_providers?: string;
     watch_region?: string;
+    with_release_type?: string;
   }>;
 }
 
@@ -31,6 +32,7 @@ export default async function DiscoverMoviePage({ searchParams }: DiscoverMovieP
     primary_release_year: params.year ? Number(params.year) : undefined,
     with_watch_providers: params.with_watch_providers,
     watch_region: params.with_watch_providers ? (params.watch_region ?? "US") : undefined,
+    with_release_type: params.with_release_type,
   };
   const [data, genresData] = await Promise.all([
     discoverMovies({ ...discoverParams, page: Number(params.page) || 1 }),
@@ -43,9 +45,9 @@ export default async function DiscoverMoviePage({ searchParams }: DiscoverMovieP
         Discover Movies
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Filter thousands of movies by genre, release year, and popularity.
+        Filter thousands of movies by genre, release year, release type, and popularity.
       </Typography>
-      <DiscoverFilters basePath="/movies/discover" genres={genresData.genres} />
+      <DiscoverFilters basePath="/movies/discover" genres={genresData.genres} showReleaseTypeFilter />
       <ListingPage
         title=""
         basePath="/movies/discover"
@@ -57,6 +59,7 @@ export default async function DiscoverMoviePage({ searchParams }: DiscoverMovieP
           year: params.year,
           with_watch_providers: params.with_watch_providers,
           watch_region: params.watch_region,
+          with_release_type: params.with_release_type,
         }}
         discoverParams={discoverParams}
         bare

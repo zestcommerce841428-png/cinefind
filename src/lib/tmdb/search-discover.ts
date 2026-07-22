@@ -101,6 +101,8 @@ export interface DiscoverMovieParams {
   with_origin_country?: string;
   with_watch_providers?: string;
   watch_region?: string;
+  region?: string;
+  with_release_type?: string;
   "with_runtime.gte"?: number;
   "with_runtime.lte"?: number;
   with_keywords?: string;

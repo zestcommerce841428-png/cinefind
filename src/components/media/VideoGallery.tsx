@@ -7,23 +7,39 @@ import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import Link from "@/components/common/NextLink";
 import type { Video } from "@/lib/tmdb/types";
 
+const CATEGORY_ORDER = ["Trailer", "Teaser", "Clip", "Featurette", "Behind the Scenes", "Bloopers"] as const;
+
+function categoryLabel(type: string) {
+  return type === "Featurette" ? "Featurettes" : `${type}s`;
+}
+
 export default function VideoGallery({ videos, seeAllHref }: { videos: Video[]; seeAllHref?: string }) {
   const [active, setActive] = React.useState<Video | null>(null);
-  const youtubeVideos = videos.filter((v) => v.site === "YouTube").slice(0, 8);
+  const youtubeVideos = videos.filter((v) => v.site === "YouTube");
+
+  const categories = CATEGORY_ORDER.filter((type) => youtubeVideos.some((v) => v.type === type));
+  const otherVideos = youtubeVideos.filter((v) => !CATEGORY_ORDER.includes(v.type as (typeof CATEGORY_ORDER)[number]));
+  if (otherVideos.length > 0) categories.push("Other" as (typeof CATEGORY_ORDER)[number]);
+
+  const [tab, setTab] = React.useState<string>(categories[0] ?? "");
 
   if (!youtubeVideos.length) return null;
 
+  const activeVideos = (tab === "Other" ? otherVideos : youtubeVideos.filter((v) => v.type === tab)).slice(0, 8);
+
   return (
     <Box component="section" sx={{ mb: 5 }}>
-      <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+      <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", mb: 1 }}>
         <Typography variant="h5" sx={{ fontWeight: 800 }}>
-          Videos & Trailers
+          Videos &amp; Clips
         </Typography>
         {seeAllHref && (
           <Button component={Link} href={seeAllHref} size="small">
@@ -31,8 +47,23 @@ export default function VideoGallery({ videos, seeAllHref }: { videos: Video[]; 
           </Button>
         )}
       </Stack>
+
+      {categories.length > 1 && (
+        <Tabs
+          value={tab}
+          onChange={(_, v) => setTab(v)}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{ mb: 2, minHeight: 36 }}
+        >
+          {categories.map((cat) => (
+            <Tab key={cat} value={cat} label={categoryLabel(cat)} sx={{ minHeight: 36, py: 0.5 }} />
+          ))}
+        </Tabs>
+      )}
+
       <Box sx={{ display: "flex", gap: 2, overflowX: "auto", pb: 1 }}>
-        {youtubeVideos.map((video) => (
+        {activeVideos.map((video) => (
           <Box
             key={video.id}
             onClick={() => setActive(video)}

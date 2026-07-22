@@ -76,8 +76,8 @@ export const getPopularMovies = (page = 1) =>
 export const getTopRatedMovies = (page = 1) =>
   tmdbFetch<PaginatedResponse<MovieSummary>>("/movie/top_rated", { params: { page } });
 
-export const getNowPlayingMovies = (page = 1) =>
-  tmdbFetch<PaginatedResponse<MovieSummary>>("/movie/now_playing", { params: { page } });
+export const getNowPlayingMovies = (page = 1, region?: string) =>
+  tmdbFetch<PaginatedResponse<MovieSummary>>("/movie/now_playing", { params: { page, region } });
 
 export const getUpcomingMovies = (page = 1) =>
   tmdbFetch<PaginatedResponse<MovieSummary>>("/movie/upcoming", { params: { page } });

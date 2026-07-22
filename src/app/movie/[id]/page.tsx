@@ -17,6 +17,7 @@ import ReviewList from "@/components/media/ReviewList";
 import MediaRow from "@/components/media/MediaRow";
 import ActionButtons from "@/components/account/ActionButtons";
 import EmbedWidget from "@/components/media/EmbedWidget";
+import ExternalLinks from "@/components/media/ExternalLinks";
 import ShareButton from "@/components/media/ShareButton";
 import BreadcrumbJsonLd from "@/components/common/BreadcrumbJsonLd";
 import RecentlyViewedRecorder from "@/components/media/RecentlyViewedRecorder";
@@ -33,6 +34,8 @@ import {
   getMovieWatchProviders,
   getMovieKeywords,
   getMovieAccountStates,
+  getMovieExternalIds,
+  getKeywordMovies,
 } from "@/lib/tmdb";
 
 export const revalidate = 3600;
@@ -52,6 +55,7 @@ async function loadMovie(id: string) {
       getMovieReviews(id),
       getMovieWatchProviders(id),
       getMovieKeywords(id),
+      getMovieExternalIds(id),
     ]);
   } catch (err) {
     if (err instanceof TmdbError && err.status === 404) return null;
@@ -84,13 +88,20 @@ export default async function MoviePage({ params }: MoviePageProps) {
   const data = await loadMovie(id);
   if (!data) notFound();
 
-  const [movie, credits, videos, similar, recommendations, reviews, watchProviders, keywords] = data;
+  const [movie, credits, videos, similar, recommendations, reviews, watchProviders, keywords, externalIds] =
+    data;
   const sessionId = await getSessionId();
   const accountStates = sessionId
     ? await getMovieAccountStates(id, sessionId).catch(() => null)
     : null;
   const ratedValue =
     accountStates && typeof accountStates.rated === "object" ? accountStates.rated.value : null;
+
+  const themeKeyword = keywords.keywords?.[0];
+  const byTheme = themeKeyword
+    ? await getKeywordMovies(themeKeyword.id).catch(() => null)
+    : null;
+  const byThemeResults = (byTheme?.results ?? []).filter((m) => m.id !== movie.id).slice(0, 12);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -193,6 +204,14 @@ export default async function MoviePage({ params }: MoviePageProps) {
               mediaType="movie"
               seeAllHref={`/movie/${id}/recommendations`}
             />
+            {byThemeResults.length > 0 && themeKeyword && (
+              <MediaRow
+                title={`More "${themeKeyword.name}" Movies`}
+                items={byThemeResults}
+                mediaType="movie"
+                seeAllHref={`/keyword/${themeKeyword.id}`}
+              />
+            )}
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <WatchProviders data={watchProviders} />
@@ -209,17 +228,10 @@ export default async function MoviePage({ params }: MoviePageProps) {
                 />
                 <FactRow label="Budget" value={movie.budget ? `$${movie.budget.toLocaleString()}` : "—"} />
                 <FactRow label="Revenue" value={movie.revenue ? `$${movie.revenue.toLocaleString()}` : "—"} />
-                {movie.homepage && (
-                  <FactRow
-                    label="Homepage"
-                    value={
-                      <a href={movie.homepage} target="_blank" rel="noopener noreferrer">
-                        Visit site
-                      </a>
-                    }
-                  />
-                )}
               </Stack>
+              <Box sx={{ mt: 1.5 }}>
+                <ExternalLinks homepage={movie.homepage} externalIds={externalIds} />
+              </Box>
             </Box>
 
             <Box component="section" sx={{ mb: 4 }}>

@@ -30,6 +30,7 @@ const STATIC_DESTINATIONS = [
   { label: "My Watchlist", href: "/account/watchlist" },
   { label: "My Favorites", href: "/account/favorites" },
   { label: "My Ratings", href: "/account/rated" },
+  { label: "Guest Ratings", href: "/account/guest-ratings" },
   { label: "Release Calendar", href: "/calendar" },
   { label: "Compare Movies", href: "/compare/movie" },
   { label: "Six Degrees of Separation", href: "/six-degrees" },
@@ -47,6 +48,9 @@ const STATIC_DESTINATIONS = [
   { label: "Site Map", href: "/site-map" },
   { label: "Changelog", href: "/changelog" },
   { label: "System Status", href: "/status" },
+  { label: "Wallpapers & Photos", href: "/photos" },
+  { label: "Trailers & Clips", href: "/clips" },
+  { label: "New on Digital", href: "/movies/new-on-digital" },
 ];
 
 export default function CommandPalette() {
