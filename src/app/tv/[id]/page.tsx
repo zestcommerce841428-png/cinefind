@@ -220,6 +220,10 @@ export default async function TvPage({ params }: TvPageProps) {
                   label="Networks"
                   value={tv.networks?.map((n) => n.name).join(", ") || "—"}
                 />
+                <FactRow
+                  label="Spoken Languages"
+                  value={tv.spoken_languages?.map((l) => l.english_name).join(", ") || "—"}
+                />
               </Stack>
               <Box sx={{ mt: 1.5 }}>
                 <ExternalLinks homepage={tv.homepage} externalIds={externalIds} />

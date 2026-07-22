@@ -43,6 +43,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/box-office", label: "Box Office Leaderboard" },
       { href: "/reunions", label: "Cast Reunions" },
       { href: "/insights/runtime", label: "Runtime Explorer" },
+      { href: "/keywords", label: "Keywords Explorer" },
       { href: "/calendar", label: "Release Calendar" },
       { href: "/find", label: "Find by IMDb ID" },
       { href: "/blog", label: "Blog" },

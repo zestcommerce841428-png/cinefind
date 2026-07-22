@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import DiscoverFilters from "@/components/discover/DiscoverFilters";
 import ListingPage from "@/components/discover/ListingPage";
-import { discoverTv, getTvGenres } from "@/lib/tmdb";
+import { discoverTv, getTvGenres, getTvWatchProvidersList } from "@/lib/tmdb";
 
 export const revalidate = 1800;
 export const metadata: Metadata = {
@@ -32,9 +32,10 @@ export default async function DiscoverTvPage({ searchParams }: DiscoverTvPagePro
     with_watch_providers: params.with_watch_providers,
     watch_region: params.with_watch_providers ? (params.watch_region ?? "US") : undefined,
   };
-  const [data, genresData] = await Promise.all([
+  const [data, genresData, providersData] = await Promise.all([
     discoverTv({ ...discoverParams, page: Number(params.page) || 1 }),
     getTvGenres(),
+    getTvWatchProvidersList("US"),
   ]);
 
   return (
@@ -45,7 +46,7 @@ export default async function DiscoverTvPage({ searchParams }: DiscoverTvPagePro
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         Filter thousands of TV shows by genre, first air date, and popularity.
       </Typography>
-      <DiscoverFilters basePath="/tv/discover" genres={genresData.genres} />
+      <DiscoverFilters basePath="/tv/discover" genres={genresData.genres} providers={providersData.results} />
       <ListingPage
         title=""
         basePath="/tv/discover"

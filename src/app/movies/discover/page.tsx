@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import DiscoverFilters from "@/components/discover/DiscoverFilters";
 import ListingPage from "@/components/discover/ListingPage";
-import { discoverMovies, getMovieGenres } from "@/lib/tmdb";
+import { discoverMovies, getMovieGenres, getMovieWatchProvidersList } from "@/lib/tmdb";
 
 export const revalidate = 1800;
 export const metadata: Metadata = {
@@ -34,9 +34,10 @@ export default async function DiscoverMoviePage({ searchParams }: DiscoverMovieP
     watch_region: params.with_watch_providers ? (params.watch_region ?? "US") : undefined,
     with_release_type: params.with_release_type,
   };
-  const [data, genresData] = await Promise.all([
+  const [data, genresData, providersData] = await Promise.all([
     discoverMovies({ ...discoverParams, page: Number(params.page) || 1 }),
     getMovieGenres(),
+    getMovieWatchProvidersList("US"),
   ]);
 
   return (
@@ -47,7 +48,12 @@ export default async function DiscoverMoviePage({ searchParams }: DiscoverMovieP
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         Filter thousands of movies by genre, release year, release type, and popularity.
       </Typography>
-      <DiscoverFilters basePath="/movies/discover" genres={genresData.genres} showReleaseTypeFilter />
+      <DiscoverFilters
+        basePath="/movies/discover"
+        genres={genresData.genres}
+        showReleaseTypeFilter
+        providers={providersData.results}
+      />
       <ListingPage
         title=""
         basePath="/movies/discover"

@@ -22,6 +22,8 @@ import MediaGrid from "@/components/media/MediaGrid";
 import BreadcrumbJsonLd from "@/components/common/BreadcrumbJsonLd";
 import FilmographyTimeline from "@/components/detail/FilmographyTimeline";
 import GenreFingerprint from "@/components/detail/GenreFingerprint";
+import DirectorRatingTrend from "@/components/detail/DirectorRatingTrend";
+import FrequentCoStars from "@/components/detail/FrequentCoStars";
 import type { MovieSummary, TvSummary } from "@/lib/tmdb/types";
 
 export const revalidate = 3600;
@@ -214,6 +216,11 @@ export default async function PersonPage({ params }: PersonPageProps) {
 
           <GenreFingerprint items={uniqueCastCredits as (MovieSummary | TvSummary)[]} genreNames={genreNameMap} />
           <FilmographyTimeline items={uniqueCastCredits as (MovieSummary | TvSummary)[]} />
+          <DirectorRatingTrend crew={credits.crew as ((MovieSummary | TvSummary) & { job: string })[]} />
+          <FrequentCoStars
+            personId={person.id}
+            credits={uniqueCastCredits as ((MovieSummary | TvSummary) & { media_type: "movie" | "tv" })[]}
+          />
 
           <Button component={Link} href={`/person/${id}/images`} variant="outlined" size="small">
             View Photos

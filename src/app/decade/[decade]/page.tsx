@@ -7,7 +7,7 @@ export const revalidate = 3600;
 
 interface PageProps {
   params: Promise<{ decade: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; gems?: string }>;
 }
 
 function parseDecade(decade: string) {
@@ -31,25 +31,40 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function DecadePage({ params, searchParams }: PageProps) {
   const { decade } = await params;
-  const { page } = await searchParams;
+  const { page, gems } = await searchParams;
   const start = parseDecade(decade);
   if (start === null) notFound();
 
-  const discoverParams = {
-    "primary_release_date.gte": `${start}-01-01`,
-    "primary_release_date.lte": `${start + 9}-12-31`,
-    "vote_count.gte": 20,
-  };
+  const isGems = gems === "1";
+  const discoverParams = isGems
+    ? {
+        "primary_release_date.gte": `${start}-01-01`,
+        "primary_release_date.lte": `${start + 9}-12-31`,
+        sort_by: "vote_average.desc",
+        "vote_average.gte": 7.5,
+        "vote_count.gte": 30,
+        "vote_count.lte": 800,
+      }
+    : {
+        "primary_release_date.gte": `${start}-01-01`,
+        "primary_release_date.lte": `${start + 9}-12-31`,
+        "vote_count.gte": 20,
+      };
   const data = await discoverMovies({ ...discoverParams, page: Number(page) || 1 });
 
   return (
     <ListingPage
-      title={`${decade} Movies`}
-      description={`The most popular movies released between ${start} and ${start + 9}.`}
+      title={isGems ? `Hidden Gems of the ${decade}` : `${decade} Movies`}
+      description={
+        isGems
+          ? `Highly-rated ${decade} movies with 30–800 votes — great films that stayed under the radar.`
+          : `The most popular movies released between ${start} and ${start + 9}.`
+      }
       basePath={`/decade/${decade}`}
       data={data}
       mediaType="movie"
       discoverParams={discoverParams}
+      extraParams={{ gems: isGems ? "1" : undefined }}
     />
   );
 }

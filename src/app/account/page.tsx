@@ -18,6 +18,7 @@ import {
 } from "@/lib/tmdb";
 import { getSessionId } from "@/lib/session";
 import MediaGrid from "@/components/media/MediaGrid";
+import RewatchReminder from "@/components/account/RewatchReminder";
 
 export const metadata: Metadata = {
   title: "My Account",
@@ -71,6 +72,8 @@ export default async function AccountPage() {
           </Button>
         </form>
       </Stack>
+
+      <RewatchReminder ratedMovies={ratedMovies.results} ratedTv={ratedTv.results} />
 
       <Section title="Favorite Movies" items={favMovies.results} mediaType="movie" />
       <Section title="Favorite TV Shows" items={favTv.results} mediaType="tv" />

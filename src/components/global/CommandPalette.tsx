@@ -38,6 +38,7 @@ const STATIC_DESTINATIONS = [
   { label: "Runtime Explorer", href: "/insights/runtime" },
   { label: "Watch Party Picker", href: "/watch-party" },
   { label: "Movie Duel", href: "/duel" },
+  { label: "Keywords Explorer", href: "/keywords" },
   { label: "Release Calendar", href: "/calendar" },
   { label: "Compare Movies", href: "/compare/movie" },
   { label: "Six Degrees of Separation", href: "/six-degrees" },

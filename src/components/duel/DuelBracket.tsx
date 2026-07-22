@@ -9,6 +9,7 @@ import Chip from "@mui/material/Chip";
 import Link from "@/components/common/NextLink";
 import { tmdbImage } from "@/lib/tmdb/config";
 import type { MovieSummary } from "@/lib/tmdb/types";
+import ShareDuelResult from "./ShareDuelResult";
 
 function shuffle<T>(arr: T[]): T[] {
   const copy = [...arr];
@@ -81,9 +82,16 @@ export default function DuelBracket({ pool }: { pool: MovieSummary[] }) {
         <Typography variant="h5" sx={{ fontWeight: 800, mt: 2 }}>
           {champion.title}
         </Typography>
-        <Button variant="contained" sx={{ mt: 3 }} onClick={restart}>
-          Play Again
-        </Button>
+        <Box sx={{ display: "flex", gap: 2, justifyContent: "center", mt: 3, flexWrap: "wrap" }}>
+          <Button variant="contained" onClick={restart}>
+            Play Again
+          </Button>
+          <ShareDuelResult
+            title={champion.title}
+            posterPath={champion.poster_path}
+            year={champion.release_date?.slice(0, 4)}
+          />
+        </Box>
       </Box>
     );
   }

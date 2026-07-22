@@ -232,6 +232,10 @@ export default async function MoviePage({ params }: MoviePageProps) {
                   label="Original Language"
                   value={movie.original_language?.toUpperCase()}
                 />
+                <FactRow
+                  label="Spoken Languages"
+                  value={movie.spoken_languages?.map((l) => l.english_name).join(", ") || "—"}
+                />
                 <FactRow label="Budget" value={movie.budget ? `$${movie.budget.toLocaleString()}` : "—"} />
                 <FactRow label="Revenue" value={movie.revenue ? `$${movie.revenue.toLocaleString()}` : "—"} />
               </Stack>

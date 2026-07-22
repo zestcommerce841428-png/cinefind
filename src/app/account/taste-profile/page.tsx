@@ -22,6 +22,7 @@ import {
 } from "@/lib/tmdb";
 import { getSessionId } from "@/lib/session";
 import type { MovieSummary, TvSummary } from "@/lib/tmdb/types";
+import { matchPersonas } from "@/lib/tastePersonas";
 
 export const revalidate = 0;
 export const metadata: Metadata = { title: "Your Taste Profile", robots: { index: false } };
@@ -96,6 +97,7 @@ export default async function TasteProfilePage() {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 8);
   const maxGenreCount = topGenres[0]?.[1] ?? 1;
+  const personaMatches = matchPersonas(genreCounts).filter((m) => m.score > 0);
 
   const decadeCounts = new Map<string, number>();
   for (const m of uniqueMovies) {
@@ -209,6 +211,32 @@ export default async function TasteProfilePage() {
           ))}
         </Stack>
       </Box>
+
+      {personaMatches.length > 0 && (
+        <Box sx={{ mt: 5 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+            Your Closest Taste Personas
+          </Typography>
+          <Grid container spacing={2}>
+            {personaMatches.map(({ persona, score }) => (
+              <Grid key={persona.slug} size={{ xs: 12, sm: 4 }}>
+                <Paper variant="outlined" sx={{ p: 2.5 }}>
+                  <Typography sx={{ fontSize: 28, mb: 0.5 }}>{persona.emoji}</Typography>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
+                    {persona.label}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    {persona.description}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {Math.round(score * 100)}% match
+                  </Typography>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      )}
 
       {topDecades.length > 0 && (
         <Box sx={{ mt: 5 }}>

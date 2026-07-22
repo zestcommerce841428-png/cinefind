@@ -13,7 +13,15 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import Tooltip from "@mui/material/Tooltip";
+import Avatar from "@mui/material/Avatar";
 import type { Genre } from "@/lib/tmdb/types";
+import { tmdbImage } from "@/lib/tmdb/config";
+
+interface WatchProviderOption {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string | null;
+}
 
 const SORT_OPTIONS = [
   { value: "popularity.desc", label: "Most Popular" },
@@ -37,9 +45,15 @@ interface DiscoverFiltersProps {
   genres: Genre[];
   /** Movie discover only — TMDB's discover/tv has no concept of release type. */
   showReleaseTypeFilter?: boolean;
+  providers?: WatchProviderOption[];
 }
 
-export default function DiscoverFilters({ basePath, genres, showReleaseTypeFilter = false }: DiscoverFiltersProps) {
+export default function DiscoverFilters({
+  basePath,
+  genres,
+  showReleaseTypeFilter = false,
+  providers = [],
+}: DiscoverFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -54,6 +68,12 @@ export default function DiscoverFilters({ basePath, genres, showReleaseTypeFilte
   const releaseTypes = (searchParams.get("with_release_type") ?? "")
     .split("|")
     .filter(Boolean);
+  const rawProviders = searchParams.get("with_watch_providers") ?? "";
+  const providerMode: "and" | "or" = rawProviders.includes(",") ? "and" : "or";
+  const selectedProviders = rawProviders
+    .split(/[,|]/)
+    .filter(Boolean)
+    .map(Number);
 
   function updateParams(updates: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
@@ -155,6 +175,72 @@ export default function DiscoverFilters({ basePath, genres, showReleaseTypeFilte
             </Select>
           </FormControl>
         </Grid>
+
+        {providers.length > 0 && (
+          <>
+            <Grid size={{ xs: 12, sm: 8 }}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="providers-label">Streaming Providers</InputLabel>
+                <Select
+                  labelId="providers-label"
+                  multiple
+                  label="Streaming Providers"
+                  value={selectedProviders}
+                  input={<OutlinedInput label="Streaming Providers" />}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+                      {(selected as number[]).map((id) => (
+                        <Chip
+                          key={id}
+                          size="small"
+                          label={providers.find((p) => p.provider_id === id)?.provider_name ?? id}
+                        />
+                      ))}
+                    </Box>
+                  )}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const arr = typeof value === "string" ? value.split(",").map(Number) : (value as number[]);
+                    const separator = providerMode === "and" ? "," : "|";
+                    updateParams({
+                      with_watch_providers: arr.join(separator) || null,
+                      watch_region: arr.length > 0 ? "US" : null,
+                    });
+                  }}
+                >
+                  {providers.map((p) => (
+                    <MenuItem key={p.provider_id} value={p.provider_id}>
+                      <Avatar
+                        src={tmdbImage(p.logo_path, "w45") ?? undefined}
+                        variant="rounded"
+                        sx={{ width: 20, height: 20, mr: 1 }}
+                      />
+                      {p.provider_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12, sm: "auto" }}>
+              <Tooltip title="Available on ALL selected services, or ANY one of them">
+                <ToggleButtonGroup
+                  exclusive
+                  size="small"
+                  value={providerMode}
+                  onChange={(_, mode) => {
+                    if (!mode || selectedProviders.length === 0) return;
+                    const separator = mode === "and" ? "," : "|";
+                    updateParams({ with_watch_providers: selectedProviders.join(separator) });
+                  }}
+                  sx={{ height: 40 }}
+                >
+                  <ToggleButton value="and">On ALL</ToggleButton>
+                  <ToggleButton value="or">On ANY</ToggleButton>
+                </ToggleButtonGroup>
+              </Tooltip>
+            </Grid>
+          </>
+        )}
 
         {showReleaseTypeFilter && (
           <Grid size={12}>

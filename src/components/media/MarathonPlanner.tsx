@@ -9,6 +9,8 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import DeleteIcon from "@mui/icons-material/Delete";
+import PrintIcon from "@mui/icons-material/Print";
+import EventIcon from "@mui/icons-material/Event";
 import Link from "@/components/common/NextLink";
 import { tmdbImage } from "@/lib/tmdb/config";
 import {
@@ -23,6 +25,53 @@ function formatDuration(minutes: number) {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
   return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
+function escapeIcs(str: string) {
+  return str.replace(/\\/g, "\\\\").replace(/,/g, "\\,").replace(/;/g, "\\;").replace(/\n/g, "\\n");
+}
+
+function toIcsDateTime(base: Date, minutesFromMidnight: number) {
+  const d = new Date(base);
+  d.setHours(0, 0, 0, 0);
+  d.setMinutes(minutesFromMidnight);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+}
+
+function downloadMarathonIcs(schedule: { item: { id: number; title: string; runtime: number }; start: number }[]) {
+  const now = new Date();
+  const stamp = now.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  const events = schedule
+    .map(({ item, start }) => {
+      const dtStart = toIcsDateTime(now, start);
+      const dtEnd = toIcsDateTime(now, start + item.runtime);
+      return `BEGIN:VEVENT
+UID:marathon-${item.id}-${stamp}@cinefind
+DTSTAMP:${stamp}
+DTSTART:${dtStart}
+DTEND:${dtEnd}
+SUMMARY:${escapeIcs(item.title)}
+END:VEVENT`;
+    })
+    .join("\n");
+
+  const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//CineFind//Marathon Planner//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:My Movie Marathon
+${events}
+END:VCALENDAR`;
+
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "cinefind-marathon.ics";
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 export default function MarathonPlanner() {
@@ -68,6 +117,7 @@ export default function MarathonPlanner() {
           size="small"
           value={startTime}
           onChange={(e) => setStartTime(e.target.value)}
+          data-print-hide
         />
         <Box>
           <Typography variant="h6" sx={{ fontWeight: 800 }}>
@@ -77,6 +127,15 @@ export default function MarathonPlanner() {
             {items.length} movie{items.length === 1 ? "" : "s"} · ends around {formatClock(cursor)}
           </Typography>
         </Box>
+      </Stack>
+
+      <Stack direction="row" spacing={1.5} data-print-hide>
+        <Button variant="outlined" startIcon={<PrintIcon />} onClick={() => window.print()}>
+          Print Schedule
+        </Button>
+        <Button variant="outlined" startIcon={<EventIcon />} onClick={() => downloadMarathonIcs(schedule)}>
+          Add to Calendar (.ics)
+        </Button>
       </Stack>
 
       <Stack spacing={1.5}>
@@ -100,14 +159,19 @@ export default function MarathonPlanner() {
                 Starts {formatClock(start)} · {formatDuration(item.runtime)}
               </Typography>
             </Box>
-            <IconButton size="small" onClick={() => removeFromMarathon(item.id)} aria-label={`Remove ${item.title}`}>
+            <IconButton
+              size="small"
+              onClick={() => removeFromMarathon(item.id)}
+              aria-label={`Remove ${item.title}`}
+              data-print-hide
+            >
               <DeleteIcon fontSize="small" />
             </IconButton>
           </Stack>
         ))}
       </Stack>
 
-      <Button color="inherit" onClick={clearMarathon} sx={{ alignSelf: "flex-start" }}>
+      <Button color="inherit" onClick={clearMarathon} sx={{ alignSelf: "flex-start" }} data-print-hide>
         Clear marathon
       </Button>
     </Stack>

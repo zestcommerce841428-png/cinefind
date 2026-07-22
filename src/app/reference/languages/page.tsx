@@ -6,6 +6,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Link from "@/components/common/NextLink";
 import { getLanguages } from "@/lib/tmdb";
 
 export const revalidate = 86400;
@@ -33,6 +34,7 @@ export default async function LanguagesPage() {
             <TableCell sx={{ fontWeight: 700 }}>Code</TableCell>
             <TableCell sx={{ fontWeight: 700 }}>English Name</TableCell>
             <TableCell sx={{ fontWeight: 700 }}>Native Name</TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -41,6 +43,9 @@ export default async function LanguagesPage() {
               <TableCell>{lang.iso_639_1}</TableCell>
               <TableCell>{lang.english_name}</TableCell>
               <TableCell>{lang.name || "—"}</TableCell>
+              <TableCell>
+                <Link href={`/language/${lang.iso_639_1}`}>Browse movies</Link>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
