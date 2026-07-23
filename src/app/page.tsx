@@ -28,6 +28,7 @@ import Link from "@/components/common/NextLink";
 import SearchBox from "@/app/search/SearchBox";
 import MediaRow from "@/components/media/MediaRow";
 import PosterMarquee from "@/components/home/PosterMarquee";
+import { ENTRIES as CHANGELOG_ENTRIES } from "@/app/changelog/page";
 import { tmdbImage } from "@/lib/tmdb/config";
 import { getTrending, getMovieGenres, getTvGenres, getCountries, getLanguages } from "@/lib/tmdb";
 import type { MovieSummary, TvSummary } from "@/lib/tmdb/types";
@@ -387,6 +388,39 @@ export default async function HomePage() {
                 ))}
               </TableBody>
             </Table>
+          </Box>
+        </Box>
+
+        <Box component="section" sx={{ mb: 8, maxWidth: 640, mx: "auto" }}>
+          <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+            <Typography variant="h5" sx={{ fontWeight: 800 }}>
+              Recently Added
+            </Typography>
+            <Button component={Link} href="/changelog" size="small" endIcon={<ArrowForwardIcon />}>
+              Full changelog
+            </Button>
+          </Stack>
+          <Box
+            sx={{
+              p: 3,
+              borderRadius: 3,
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", mb: 1.5 }}>
+              <Chip label={`v${CHANGELOG_ENTRIES[0].version}`} size="small" color="primary" sx={{ fontWeight: 700 }} />
+              <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
+                {CHANGELOG_ENTRIES[0].title}
+              </Typography>
+            </Stack>
+            <Stack component="ul" spacing={0.5} sx={{ pl: 3, m: 0 }}>
+              {CHANGELOG_ENTRIES[0].items.slice(0, 4).map((item) => (
+                <Typography key={item} component="li" variant="body2" color="text.secondary">
+                  {item}
+                </Typography>
+              ))}
+            </Stack>
           </Box>
         </Box>
 

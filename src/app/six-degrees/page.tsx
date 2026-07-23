@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import SixDegreesFinder from "@/components/six-degrees/SixDegreesFinder";
+import ShareButton from "@/components/media/ShareButton";
 
 export const metadata: Metadata = {
   title: "Six Degrees of Separation",
@@ -12,9 +14,12 @@ export const metadata: Metadata = {
 export default function SixDegreesPage() {
   return (
     <Container maxWidth="sm" sx={{ py: 5 }}>
-      <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>
-        Six Degrees of Separation
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, mb: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 800 }}>
+          Six Degrees of Separation
+        </Typography>
+        <ShareButton title="Six Degrees of Separation — CineFind" text="Find how two actors are connected." />
+      </Box>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
         Pick two actors and we&apos;ll search their most popular credits for a shared movie, TV show,
         or co-star that connects them.

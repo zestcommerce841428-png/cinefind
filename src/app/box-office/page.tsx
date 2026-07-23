@@ -11,6 +11,7 @@ import TableRow from "@mui/material/TableRow";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import Link from "@/components/common/NextLink";
+import ShareButton from "@/components/media/ShareButton";
 import { discoverMovies, getMovieDetails } from "@/lib/tmdb";
 import { tmdbImage } from "@/lib/tmdb/config";
 
@@ -67,9 +68,12 @@ export default async function BoxOfficePage({ searchParams }: PageProps) {
 
   return (
     <Container maxWidth="lg" sx={{ py: 5 }}>
-      <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>
-        Box Office Leaderboard
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, mb: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 800 }}>
+          Box Office Leaderboard
+        </Typography>
+        <ShareButton title="Box Office Leaderboard — CineFind" text="Real budget vs. revenue, sortable by ROI." />
+      </Box>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         Real budget and revenue figures from currently popular, high-vote-count releases.
       </Typography>

@@ -59,6 +59,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/trends/genres", label: "Genre Popularity Trends" },
       { href: "/random/movie", label: "Random Movie" },
       { href: "/random/tv", label: "Random Show" },
+      { href: "/people/born-today", label: "People Born Today" },
       { href: "/site-map", label: "Site Map" },
     ],
   },

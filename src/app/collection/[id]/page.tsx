@@ -8,6 +8,7 @@ import { tmdbImage } from "@/lib/tmdb/config";
 import { TmdbError } from "@/lib/tmdb/fetcher";
 import { getCollectionDetails } from "@/lib/tmdb";
 import CollectionOrderToggle from "@/components/media/CollectionOrderToggle";
+import ShareButton from "@/components/media/ShareButton";
 
 export const revalidate = 3600;
 
@@ -58,9 +59,12 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
         />
       </Box>
       <Container maxWidth="lg" sx={{ py: 5 }}>
-        <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>
-          {collection.name}
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, mb: 1 }}>
+          <Typography variant="h4" sx={{ fontWeight: 800 }}>
+            {collection.name}
+          </Typography>
+          <ShareButton title={`${collection.name} — CineFind`} text={collection.overview} />
+        </Box>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4, maxWidth: 760 }}>
           {collection.overview}
         </Typography>

@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Link from "@/components/common/NextLink";
 import KeywordSearchBox from "@/components/keywords/KeywordSearchBox";
+import ShareButton from "@/components/media/ShareButton";
 import { getTrending, getMovieKeywords } from "@/lib/tmdb";
 import type { MovieSummary } from "@/lib/tmdb/types";
 
@@ -38,9 +39,12 @@ export default async function KeywordsExplorerPage() {
 
   return (
     <Container maxWidth="md" sx={{ py: 5 }}>
-      <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>
-        Keywords Explorer
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, mb: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 800 }}>
+          Keywords Explorer
+        </Typography>
+        <ShareButton title="Keywords Explorer — CineFind" text="Search any theme or plot tag." />
+      </Box>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         Every movie is tagged with themes and plot elements. Search any keyword, or see what&apos;s
         trending this week.

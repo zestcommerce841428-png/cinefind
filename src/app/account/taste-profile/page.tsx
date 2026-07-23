@@ -7,6 +7,7 @@ import Paper from "@mui/material/Paper";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import SignInRequired from "@/components/account/SignInRequired";
+import TasteProfileCardExport from "@/components/account/TasteProfileCardExport";
 import {
   getAccountDetails,
   getRatedMovies,
@@ -142,9 +143,17 @@ export default async function TasteProfilePage() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 5 }}>
-      <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>
-        Your Taste Profile
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, mb: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 800 }}>
+          Your Taste Profile
+        </Typography>
+        <TasteProfileCardExport
+          total={total}
+          topGenres={topGenres}
+          personaLabel={personaMatches[0]?.persona.label}
+          personaEmoji={personaMatches[0]?.persona.emoji}
+        />
+      </Box>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
         Built from {total} rated, favorited, and watchlisted titles.
       </Typography>

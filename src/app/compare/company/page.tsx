@@ -6,6 +6,7 @@ import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import ComparePickerForm from "@/components/compare/ComparePickerForm";
 import MediaGrid from "@/components/media/MediaGrid";
+import ShareButton from "@/components/media/ShareButton";
 import { getCompanyDetails, discoverMovies } from "@/lib/tmdb";
 
 export const revalidate = 3600;
@@ -20,16 +21,67 @@ interface PageProps {
 }
 
 async function loadStudio(id: string) {
-  const [company, topRated, mostPopular] = await Promise.all([
+  const [company, topRated, mostPopular, recentPage1, recentPage2, recentPage3] = await Promise.all([
     getCompanyDetails(id),
     discoverMovies({ with_companies: id, sort_by: "vote_average.desc", "vote_count.gte": 50, page: 1 }),
     discoverMovies({ with_companies: id, sort_by: "popularity.desc", page: 1 }),
+    discoverMovies({ with_companies: id, sort_by: "primary_release_date.desc", page: 1 }),
+    discoverMovies({ with_companies: id, sort_by: "primary_release_date.desc", page: 2 }),
+    discoverMovies({ with_companies: id, sort_by: "primary_release_date.desc", page: 3 }),
   ]);
   const avgRating =
     mostPopular.results.length > 0
       ? mostPopular.results.reduce((sum, m) => sum + m.vote_average, 0) / mostPopular.results.length
       : 0;
-  return { company, topRated, mostPopular, avgRating };
+
+  const yearCounts = new Map<number, number>();
+  for (const m of [...recentPage1.results, ...recentPage2.results, ...recentPage3.results]) {
+    const year = Number(m.release_date?.slice(0, 4));
+    if (!year || Number.isNaN(year)) continue;
+    yearCounts.set(year, (yearCounts.get(year) ?? 0) + 1);
+  }
+
+  return { company, topRated, mostPopular, avgRating, yearCounts };
+}
+
+function OutputByYearChart({ yearCounts }: { yearCounts: Map<number, number> }) {
+  if (yearCounts.size === 0) return null;
+  const years = [...yearCounts.keys()].sort((a, b) => a - b);
+  const max = Math.max(...yearCounts.values());
+  return (
+    <Box>
+      <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+        Output by year (last ~60 releases)
+      </Typography>
+      <Box sx={{ display: "flex", alignItems: "flex-end", gap: 0.5, height: 60 }}>
+        {years.map((year) => {
+          const count = yearCounts.get(year) ?? 0;
+          return (
+            <Box key={year} sx={{ display: "flex", flexDirection: "column", alignItems: "center", flex: 1 }}>
+              <Box
+                sx={{
+                  width: "100%",
+                  maxWidth: 14,
+                  height: `${Math.max((count / max) * 44, 3)}px`,
+                  bgcolor: "secondary.main",
+                  borderRadius: 0.5,
+                }}
+                title={`${year}: ${count}`}
+              />
+            </Box>
+          );
+        })}
+      </Box>
+      <Stack direction="row" sx={{ justifyContent: "space-between" }}>
+        <Typography variant="caption" color="text.secondary">
+          {years[0]}
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          {years[years.length - 1]}
+        </Typography>
+      </Stack>
+    </Box>
+  );
 }
 
 function StudioColumn({ data }: { data: Awaited<ReturnType<typeof loadStudio>> }) {
@@ -57,6 +109,7 @@ function StudioColumn({ data }: { data: Awaited<ReturnType<typeof loadStudio>> }
           </Typography>
         </Box>
       </Stack>
+      <OutputByYearChart yearCounts={data.yearCounts} />
       <Typography variant="subtitle2" color="text.secondary">
         Most popular titles
       </Typography>
@@ -72,14 +125,22 @@ export default async function CompareCompanyPage({ searchParams }: PageProps) {
   if (a && b) {
     const [studioA, studioB] = await Promise.all([loadStudio(a), loadStudio(b)]);
     content = (
-      <Grid container spacing={4}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <StudioColumn data={studioA} />
+      <>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+          <ShareButton
+            title={`${studioA.company.name} vs ${studioB.company.name} — CineFind`}
+            text="Studio Showdown comparison"
+          />
+        </Box>
+        <Grid container spacing={4}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <StudioColumn data={studioA} />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <StudioColumn data={studioB} />
+          </Grid>
         </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <StudioColumn data={studioB} />
-        </Grid>
-      </Grid>
+      </>
     );
   }
 

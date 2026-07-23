@@ -11,13 +11,27 @@ export const metadata: Metadata = {
   alternates: { canonical: "/changelog" },
 };
 
-interface Entry {
+export interface Entry {
   version: string;
   title: string;
   items: string[];
 }
 
-const ENTRIES: Entry[] = [
+export const ENTRIES: Entry[] = [
+  {
+    version: "1.5",
+    title: "47 more mood boards, taste personas, and analytics tools",
+    items: [
+      "Expanded Browse by Mood from 8 to 47 curated genre combinations",
+      "Taste Profile with genre/decade/actor breakdown and taste-persona matching",
+      "Box Office ROI leaderboard, Runtime Explorer, and a Keywords Explorer",
+      "Cast Reunions finder, Frequent Co-Stars, and director rating-trend charts",
+      "Watch Party Picker and single-elimination Movie Duel",
+      "Marathon Planner gained print and .ics calendar export",
+      "Multi-provider ALL/ANY streaming filters, real SVG country flags",
+      "Redesigned landing page with live search, trending rows, and FAQ",
+    ],
+  },
   {
     version: "1.4",
     title: "Unlimited genres, play buttons, and 20+ discovery tools",

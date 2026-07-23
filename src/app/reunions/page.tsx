@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import ComparePickerForm from "@/components/compare/ComparePickerForm";
 import MediaCard from "@/components/media/MediaCard";
+import ShareButton from "@/components/media/ShareButton";
 import { getPersonDetails, getPersonCombinedCredits } from "@/lib/tmdb";
 import type { MovieSummary, TvSummary } from "@/lib/tmdb/types";
 
@@ -45,11 +46,14 @@ export default async function ReunionsPage({ searchParams }: PageProps) {
 
     result = (
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-          {shared.length > 0
-            ? `${personA.name} & ${personB.name} shared the screen ${shared.length} time${shared.length === 1 ? "" : "s"}`
-            : `${personA.name} & ${personB.name} haven't appeared together — yet`}
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, mb: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            {shared.length > 0
+              ? `${personA.name} & ${personB.name} shared the screen ${shared.length} time${shared.length === 1 ? "" : "s"}`
+              : `${personA.name} & ${personB.name} haven't appeared together — yet`}
+          </Typography>
+          <ShareButton title={`${personA.name} & ${personB.name} — Cast Reunions`} text="See every title where they shared the screen." />
+        </Box>
         <Grid container spacing={2}>
           {shared.map((credit) => (
             <Grid key={`${credit.media_type}-${credit.id}`} size={{ xs: 6, sm: 4, md: 3, lg: 2.4 }}>

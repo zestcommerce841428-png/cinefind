@@ -69,6 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/watch-party",
     "/duel",
     "/keywords",
+    "/people/born-today",
   ].map((route) => ({
     url: `${SITE_URL}${route}`,
     changeFrequency: route === "" ? "daily" : "weekly",

@@ -44,6 +44,7 @@ const STATIC_DESTINATIONS = [
   { label: "Six Degrees of Separation", href: "/six-degrees" },
   { label: "Advanced Search", href: "/search/advanced" },
   { label: "Random Movie", href: "/random/movie" },
+  { label: "People Born Today", href: "/people/born-today" },
   { label: "Developers", href: "/developers" },
   { label: "Hidden Gems", href: "/hidden-gems" },
   { label: "Browse by Mood", href: "/moods" },

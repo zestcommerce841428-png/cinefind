@@ -3,6 +3,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
+import ShareButton from "@/components/media/ShareButton";
 import { discoverMovies, getMovieDetails } from "@/lib/tmdb";
 
 export const revalidate = 21600;
@@ -48,9 +49,12 @@ export default async function RuntimeExplorerPage() {
 
   return (
     <Container maxWidth="md" sx={{ py: 5 }}>
-      <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>
-        Runtime Explorer
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, mb: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 800 }}>
+          Runtime Explorer
+        </Typography>
+        <ShareButton title="Runtime Explorer — CineFind" text="Average movie runtime by genre." />
+      </Box>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
         Average runtime by genre, sampled from currently popular, well-rated movies.
       </Typography>

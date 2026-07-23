@@ -9,8 +9,10 @@ import PaginationItem from "@mui/material/PaginationItem";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Box from "@mui/material/Box";
 import Link from "@/components/common/NextLink";
 import MediaGrid from "@/components/media/MediaGrid";
+import ShareButton from "@/components/media/ShareButton";
 import type { MovieSummary, TvSummary } from "@/lib/tmdb/types";
 import type { PaginatedResponse } from "@/lib/tmdb/types";
 
@@ -86,9 +88,12 @@ export default function ListingPage({
   const body = (
     <>
       {title && (
-        <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>
-          {title}
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, mb: 1 }}>
+          <Typography variant="h4" sx={{ fontWeight: 800 }}>
+            {title}
+          </Typography>
+          <ShareButton title={`${title} — CineFind`} text={description} />
+        </Box>
       )}
       {description && (
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>

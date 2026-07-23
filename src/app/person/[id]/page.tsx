@@ -21,9 +21,11 @@ import {
 import MediaGrid from "@/components/media/MediaGrid";
 import BreadcrumbJsonLd from "@/components/common/BreadcrumbJsonLd";
 import FilmographyTimeline from "@/components/detail/FilmographyTimeline";
+import FilmographyDecadeHeatmap from "@/components/detail/FilmographyDecadeHeatmap";
 import GenreFingerprint from "@/components/detail/GenreFingerprint";
 import DirectorRatingTrend from "@/components/detail/DirectorRatingTrend";
 import FrequentCoStars from "@/components/detail/FrequentCoStars";
+import ShareButton from "@/components/media/ShareButton";
 import type { MovieSummary, TvSummary } from "@/lib/tmdb/types";
 
 export const revalidate = 3600;
@@ -184,9 +186,12 @@ export default async function PersonPage({ params }: PersonPageProps) {
         </Grid>
 
         <Grid size={{ xs: 12, sm: 8, md: 9 }}>
-          <Typography variant="h3" sx={{ fontWeight: 800, mb: 2, fontSize: { xs: 28, md: 40 } }}>
-            {person.name}
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, mb: 2 }}>
+            <Typography variant="h3" sx={{ fontWeight: 800, fontSize: { xs: 28, md: 40 } }}>
+              {person.name}
+            </Typography>
+            <ShareButton title={`${person.name} — CineFind`} text={person.biography?.slice(0, 160)} />
+          </Box>
 
           {person.biography && (
             <Box component="section" sx={{ mb: 5 }}>
@@ -216,6 +221,7 @@ export default async function PersonPage({ params }: PersonPageProps) {
 
           <GenreFingerprint items={uniqueCastCredits as (MovieSummary | TvSummary)[]} genreNames={genreNameMap} />
           <FilmographyTimeline items={uniqueCastCredits as (MovieSummary | TvSummary)[]} />
+          <FilmographyDecadeHeatmap items={uniqueCastCredits as (MovieSummary | TvSummary)[]} />
           <DirectorRatingTrend crew={credits.crew as ((MovieSummary | TvSummary) & { job: string })[]} />
           <FrequentCoStars
             personId={person.id}
