@@ -77,8 +77,15 @@ export default function CommandPalette() {
       }
       if (e.key === "Escape") setOpen(false);
     }
+    function handleOpenEvent() {
+      setOpen(true);
+    }
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("cinefind:open-command-palette", handleOpenEvent);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("cinefind:open-command-palette", handleOpenEvent);
+    };
   }, []);
 
   React.useEffect(() => {
