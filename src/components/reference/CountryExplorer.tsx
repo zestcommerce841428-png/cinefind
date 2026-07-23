@@ -8,6 +8,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import SearchIcon from "@mui/icons-material/Search";
+import PublicIcon from "@mui/icons-material/Public";
+import * as Flags from "country-flag-icons/react/3x2";
 import Link from "@/components/common/NextLink";
 
 interface Country {
@@ -16,11 +18,12 @@ interface Country {
   native_name: string;
 }
 
-function flagEmoji(iso2: string): string {
-  if (!/^[A-Za-z]{2}$/.test(iso2)) return "🌐";
-  return iso2
-    .toUpperCase()
-    .replace(/./g, (char) => String.fromCodePoint(127397 + char.charCodeAt(0)));
+function CountryFlag({ iso2 }: { iso2: string }) {
+  const FlagSvg = (Flags as Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>>)[
+    iso2.toUpperCase()
+  ];
+  if (!FlagSvg) return <PublicIcon sx={{ width: 28, height: 20 }} color="disabled" />;
+  return <FlagSvg style={{ width: 28, height: 20, borderRadius: 2, flexShrink: 0 }} />;
 }
 
 export default function CountryExplorer({ countries }: { countries: Country[] }) {
@@ -112,7 +115,7 @@ export default function CountryExplorer({ countries }: { countries: Country[] })
                 "&:hover": { borderColor: "primary.main", transform: "translateY(-1px)" },
               }}
             >
-              <Typography sx={{ fontSize: 24, lineHeight: 1 }}>{flagEmoji(c.iso_3166_1)}</Typography>
+              <CountryFlag iso2={c.iso_3166_1} />
               <Box sx={{ minWidth: 0 }}>
                 <Typography variant="body2" sx={{ fontWeight: 700 }} noWrap>
                   {c.english_name}

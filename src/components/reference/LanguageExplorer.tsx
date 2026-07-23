@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import SearchIcon from "@mui/icons-material/Search";
+import TranslateIcon from "@mui/icons-material/Translate";
 import Link from "@/components/common/NextLink";
 
 interface Language {
@@ -106,15 +107,16 @@ export default function LanguageExplorer({ languages }: { languages: Language[] 
                 "&:hover": { borderColor: "primary.main", transform: "translateY(-1px)" },
               }}
             >
-              <Avatar sx={{ width: 36, height: 36, bgcolor: "action.selected", color: "text.primary", fontSize: 13, fontWeight: 700 }}>
-                {l.iso_639_1.toUpperCase()}
+              <Avatar sx={{ width: 36, height: 36, bgcolor: "action.selected", color: "text.primary" }}>
+                <TranslateIcon fontSize="small" />
               </Avatar>
               <Box sx={{ minWidth: 0 }}>
                 <Typography variant="body2" sx={{ fontWeight: 700 }} noWrap>
                   {l.english_name}
                 </Typography>
                 <Typography variant="caption" color="text.secondary" noWrap>
-                  {l.name && l.name !== l.english_name ? l.name : "—"}
+                  {l.iso_639_1.toUpperCase()}
+                  {l.name && l.name !== l.english_name ? ` · ${l.name}` : ""}
                 </Typography>
               </Box>
             </Box>
