@@ -13,9 +13,21 @@ import ExploreIcon from "@mui/icons-material/Explore";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import Link from "@/components/common/NextLink";
 import SearchBox from "@/app/search/SearchBox";
 import MediaRow from "@/components/media/MediaRow";
+import PosterMarquee from "@/components/home/PosterMarquee";
 import { tmdbImage } from "@/lib/tmdb/config";
 import { getTrending, getMovieGenres, getTvGenres, getCountries, getLanguages } from "@/lib/tmdb";
 import type { MovieSummary, TvSummary } from "@/lib/tmdb/types";
@@ -89,6 +101,36 @@ const HOW_IT_WORKS = [
   },
 ];
 
+const COMPARISON_ROWS: { label: string; cinefind: boolean | string; typical: boolean | string }[] = [
+  { label: "Unlimited genre combinations (match ALL or ANY)", cinefind: true, typical: false },
+  { label: "Real budget vs. box office ROI leaderboard", cinefind: true, typical: false },
+  { label: "Six Degrees of Separation between any two actors", cinefind: true, typical: false },
+  { label: "Movie Duel, Marathon Planner, Watch Party Picker", cinefind: true, typical: false },
+  { label: "Printable schedules & calendar (.ics) export", cinefind: true, typical: false },
+  { label: "Command palette (⌘K) navigation", cinefind: true, typical: false },
+  { label: "Export your full account data anytime", cinefind: true, typical: "Sometimes" },
+  { label: "No account required to browse", cinefind: true, typical: "Sometimes" },
+];
+
+const FAQS = [
+  {
+    q: "Do I need an account to use CineFind?",
+    a: "No. Every discovery, comparison, and analysis tool works without signing in. Create a free TMDB session only if you want your favorites, ratings, and watchlist to sync.",
+  },
+  {
+    q: "Where does the data come from?",
+    a: "Every title, rating, cast credit, and image comes directly from The Movie Database (TMDB) API in real time — nothing here is cached forever or hand-curated fiction.",
+  },
+  {
+    q: "Is CineFind affiliated with TMDB?",
+    a: "No. CineFind uses the TMDB API but is not endorsed or certified by TMDB.",
+  },
+  {
+    q: "Can I use this on mobile?",
+    a: "Yes — every page, including the Marathon Planner and Movie Duel, is fully responsive and touch-friendly.",
+  },
+];
+
 export default async function HomePage() {
   const [trendingMovies, trendingTv, movieGenres, tvGenres, countries, languages] = await Promise.all([
     getTrending("movie", "day", 1),
@@ -100,6 +142,9 @@ export default async function HomePage() {
   ]);
 
   const heroMovies = (trendingMovies.results as MovieSummary[]).slice(0, 3);
+  const marqueePosters = (trendingMovies.results as MovieSummary[])
+    .filter((m) => m.poster_path)
+    .slice(0, 12);
   const uniqueGenreCount = new Set([
     ...movieGenres.genres.map((g) => g.name),
     ...tvGenres.genres.map((g) => g.name),
@@ -174,6 +219,8 @@ export default async function HomePage() {
         </Container>
       </Box>
 
+      <PosterMarquee posters={marqueePosters} />
+
       <Container maxWidth="lg" sx={{ pt: 5 }}>
         <Grid container spacing={2}>
           {stats.map((s) => (
@@ -189,6 +236,24 @@ export default async function HomePage() {
             </Grid>
           ))}
         </Grid>
+      </Container>
+
+      <Container maxWidth="lg" sx={{ pt: 5 }}>
+        <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1.5 }}>
+          Jump straight to a genre
+        </Typography>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+          {movieGenres.genres.map((g) => (
+            <Chip
+              key={g.id}
+              label={g.name}
+              component={Link}
+              href={`/movies/discover?with_genres=${g.id}`}
+              clickable
+              variant="outlined"
+            />
+          ))}
+        </Box>
       </Container>
 
       <Container maxWidth="lg" sx={{ py: 6 }}>
@@ -276,22 +341,93 @@ export default async function HomePage() {
           </Box>
         ))}
 
+        <Box component="section" sx={{ mb: 8 }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, mb: 1, textAlign: "center" }}>
+            Why CineFind
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3, textAlign: "center" }}>
+            Compared to a typical movie search or watchlist app.
+          </Typography>
+          <Box sx={{ overflowX: "auto" }}>
+            <Table sx={{ minWidth: 480 }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 700 }}>Feature</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 700 }}>
+                    CineFind
+                  </TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 700 }}>
+                    Typical App
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {COMPARISON_ROWS.map((row) => (
+                  <TableRow key={row.label}>
+                    <TableCell>{row.label}</TableCell>
+                    <TableCell align="center">
+                      {row.cinefind === true ? (
+                        <CheckCircleIcon color="success" fontSize="small" />
+                      ) : (
+                        row.cinefind
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      {row.typical === false ? (
+                        <CancelIcon color="disabled" fontSize="small" />
+                      ) : row.typical === true ? (
+                        <CheckCircleIcon color="success" fontSize="small" />
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">
+                          {row.typical}
+                        </Typography>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </Box>
+
+        <Box component="section" sx={{ mb: 8, maxWidth: 760, mx: "auto" }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, mb: 3, textAlign: "center" }}>
+            Frequently Asked Questions
+          </Typography>
+          {FAQS.map((item) => (
+            <Accordion key={item.q} disableGutters sx={{ "&:before": { display: "none" } }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography sx={{ fontWeight: 700 }}>{item.q}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography color="text.secondary">{item.a}</Typography>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </Box>
+
         <Box
           sx={{
             textAlign: "center",
             py: 6,
             px: 3,
             borderRadius: 4,
-            bgcolor: "action.hover",
+            background: "linear-gradient(135deg, var(--mui-palette-secondary-main), var(--mui-palette-primary-main))",
           }}
         >
-          <Typography variant="h5" sx={{ fontWeight: 800, mb: 1.5 }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, mb: 1.5, color: "#fff" }}>
             Ready to dive in?
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+          <Typography variant="body1" sx={{ mb: 3, color: "rgba(255,255,255,0.85)" }}>
             No account required to browse. Sign in with TMDB to sync favorites, watchlist, and ratings.
           </Typography>
-          <Button component={Link} href="/discover" variant="contained" size="large">
+          <Button
+            component={Link}
+            href="/discover"
+            variant="contained"
+            size="large"
+            sx={{ bgcolor: "#fff", color: "text.primary", "&:hover": { bgcolor: "rgba(255,255,255,0.9)" } }}
+          >
             Go to CineFind
           </Button>
         </Box>
